@@ -1,0 +1,438 @@
+[2019-12-20 13:02:41,908.908] train.py [line:175] INFO: start train YOLOv3-block
+[2019-12-20 13:02:41,908.908] train_config.py [line:69] INFO: train config use_gpu:False
+[2019-12-20 13:02:41,908.908] train_config.py [line:70] INFO: train config train_batch_size:20
+[2019-12-20 13:02:41,908.908] train_config.py [line:71] INFO: train config num_epochs:60
+[2019-12-20 13:02:41,908.908] train_config.py [line:72] INFO: train config train_data_dir:../data/trainImageSet/
+[2019-12-20 13:02:41,908.908] train_config.py [line:73] INFO: train config image_count:3
+[2019-12-20 13:02:41,908.908] train_config.py [line:74] INFO: train config max_box_num:35
+[2019-12-20 13:02:41,908.908] train_config.py [line:75] INFO: train config continue_train:False
+[2019-12-20 13:02:41,908.908] train_config.py [line:76] INFO: train config pretrained:False
+[2019-12-20 13:02:41,908.908] train_config.py [line:77] INFO: train config eval_data_dir:../data/evalImageSet/
+[2019-12-20 13:02:41,908.908] train.py [line:180] INFO: build network and program
+[2019-12-20 13:02:42,173.173] train.py [line:141] INFO: current out shape:(-1, 13, 10, 10)
+[2019-12-20 13:02:42,173.173] train.py [line:141] INFO: current out shape:(-1, 13, 20, 20)
+[2019-12-20 13:02:42,189.189] train.py [line:141] INFO: current out shape:(-1, 13, 40, 40)
+[2019-12-20 13:02:42,189.189] train.py [line:141] INFO: current out shape:(-1, 13, 80, 80)
+[2019-12-20 13:02:42,189.189] train.py [line:75] INFO: origin learning rate: 0.01 boundaries: [18, 30, 42, 54]  values: [0.01, 0.005, 0.0025, 0.001, 0.0002]
+[2019-12-20 13:02:42,719.719] train.py [line:189] INFO: loss name:traintmp_4
+[2019-12-20 13:02:42,719.719] train.py [line:190] INFO: build executor and init params
+[2019-12-20 13:02:42,937.937] train.py [line:199] INFO: current pass: 0, start read image
+[2019-12-20 13:02:43,078.078] train.py [line:204] INFO: start pass 0, batch 0
+[2019-12-20 13:02:45,465.465] train.py [line:209] INFO: end pass 0, train batch 1 exe.run
+[2019-12-20 13:02:45,465.465] train.py [line:227] INFO: end pass 0, batch 1, loss 250.10784912109375 time 2.39 sec
+[2019-12-20 13:02:45,465.465] train.py [line:233] INFO: pass 0 train result, current pass mean loss: 250.10784912109375
+[2019-12-20 13:02:45,465.465] train.py [line:235] INFO: temp save pass 0 train result, current best pass mean loss: 250.10784912109375
+[2019-12-20 13:02:46,198.198] train.py [line:199] INFO: current pass: 1, start read image
+[2019-12-20 13:02:46,322.322] train.py [line:204] INFO: start pass 1, batch 0
+[2019-12-20 13:02:48,584.584] train.py [line:209] INFO: end pass 1, train batch 1 exe.run
+[2019-12-20 13:02:48,600.600] train.py [line:227] INFO: end pass 1, batch 1, loss 161.34878540039062 time 2.28 sec
+[2019-12-20 13:02:48,600.600] train.py [line:233] INFO: pass 1 train result, current pass mean loss: 161.34878540039062
+[2019-12-20 13:02:48,600.600] train.py [line:235] INFO: temp save pass 1 train result, current best pass mean loss: 161.34878540039062
+[2019-12-20 13:02:49,318.318] train.py [line:199] INFO: current pass: 2, start read image
+[2019-12-20 13:02:49,442.442] train.py [line:204] INFO: start pass 2, batch 0
+[2019-12-20 13:02:51,595.595] train.py [line:209] INFO: end pass 2, train batch 1 exe.run
+[2019-12-20 13:02:51,595.595] train.py [line:227] INFO: end pass 2, batch 1, loss 113.37346649169922 time 2.15 sec
+[2019-12-20 13:02:51,595.595] train.py [line:233] INFO: pass 2 train result, current pass mean loss: 113.37346649169922
+[2019-12-20 13:02:51,595.595] train.py [line:235] INFO: temp save pass 2 train result, current best pass mean loss: 113.37346649169922
+[2019-12-20 13:02:52,328.328] train.py [line:199] INFO: current pass: 3, start read image
+[2019-12-20 13:02:52,469.469] train.py [line:204] INFO: start pass 3, batch 0
+[2019-12-20 13:02:54,856.856] train.py [line:209] INFO: end pass 3, train batch 1 exe.run
+[2019-12-20 13:02:54,856.856] train.py [line:227] INFO: end pass 3, batch 1, loss 136.3199462890625 time 2.39 sec
+[2019-12-20 13:02:54,856.856] train.py [line:233] INFO: pass 3 train result, current pass mean loss: 136.3199462890625
+[2019-12-20 13:02:54,856.856] train.py [line:199] INFO: current pass: 4, start read image
+[2019-12-20 13:02:54,980.980] train.py [line:204] INFO: start pass 4, batch 0
+[2019-12-20 13:02:57,242.242] train.py [line:209] INFO: end pass 4, train batch 1 exe.run
+[2019-12-20 13:02:57,242.242] train.py [line:227] INFO: end pass 4, batch 1, loss 175.8284912109375 time 2.26 sec
+[2019-12-20 13:02:57,242.242] train.py [line:233] INFO: pass 4 train result, current pass mean loss: 175.8284912109375
+[2019-12-20 13:02:57,242.242] train.py [line:199] INFO: current pass: 5, start read image
+[2019-12-20 13:02:57,383.383] train.py [line:204] INFO: start pass 5, batch 0
+[2019-12-20 13:02:59,582.582] train.py [line:209] INFO: end pass 5, train batch 1 exe.run
+[2019-12-20 13:02:59,582.582] train.py [line:227] INFO: end pass 5, batch 1, loss 163.29507446289062 time 2.20 sec
+[2019-12-20 13:02:59,598.598] train.py [line:233] INFO: pass 5 train result, current pass mean loss: 163.29507446289062
+[2019-12-20 13:02:59,598.598] train.py [line:199] INFO: current pass: 6, start read image
+[2019-12-20 13:02:59,723.723] train.py [line:204] INFO: start pass 6, batch 0
+[2019-12-20 13:03:02,063.063] train.py [line:209] INFO: end pass 6, train batch 1 exe.run
+[2019-12-20 13:03:02,063.063] train.py [line:227] INFO: end pass 6, batch 1, loss 251.96011352539062 time 2.34 sec
+[2019-12-20 13:03:02,078.078] train.py [line:233] INFO: pass 6 train result, current pass mean loss: 251.96011352539062
+[2019-12-20 13:03:02,078.078] train.py [line:199] INFO: current pass: 7, start read image
+[2019-12-20 13:03:02,203.203] train.py [line:204] INFO: start pass 7, batch 0
+[2019-12-20 13:03:04,496.496] train.py [line:209] INFO: end pass 7, train batch 1 exe.run
+[2019-12-20 13:03:04,496.496] train.py [line:227] INFO: end pass 7, batch 1, loss 164.55859375 time 2.29 sec
+[2019-12-20 13:03:04,496.496] train.py [line:233] INFO: pass 7 train result, current pass mean loss: 164.55859375
+[2019-12-20 13:03:04,496.496] train.py [line:199] INFO: current pass: 8, start read image
+[2019-12-20 13:03:04,637.637] train.py [line:204] INFO: start pass 8, batch 0
+[2019-12-20 13:03:06,945.945] train.py [line:209] INFO: end pass 8, train batch 1 exe.run
+[2019-12-20 13:03:06,945.945] train.py [line:227] INFO: end pass 8, batch 1, loss 194.7821044921875 time 2.31 sec
+[2019-12-20 13:03:06,945.945] train.py [line:233] INFO: pass 8 train result, current pass mean loss: 194.7821044921875
+[2019-12-20 13:03:06,945.945] train.py [line:199] INFO: current pass: 9, start read image
+[2019-12-20 13:03:07,070.070] train.py [line:204] INFO: start pass 9, batch 0
+[2019-12-20 13:03:09,395.395] train.py [line:209] INFO: end pass 9, train batch 1 exe.run
+[2019-12-20 13:03:09,395.395] train.py [line:227] INFO: end pass 9, batch 1, loss 138.31732177734375 time 2.32 sec
+[2019-12-20 13:03:09,395.395] train.py [line:233] INFO: pass 9 train result, current pass mean loss: 138.31732177734375
+[2019-12-20 13:03:09,395.395] train.py [line:199] INFO: current pass: 10, start read image
+[2019-12-20 13:03:09,519.519] train.py [line:204] INFO: start pass 10, batch 0
+[2019-12-20 13:03:11,844.844] train.py [line:209] INFO: end pass 10, train batch 1 exe.run
+[2019-12-20 13:03:11,844.844] train.py [line:227] INFO: end pass 10, batch 1, loss 171.18832397460938 time 2.32 sec
+[2019-12-20 13:03:11,844.844] train.py [line:233] INFO: pass 10 train result, current pass mean loss: 171.18832397460938
+[2019-12-20 13:03:11,844.844] train.py [line:199] INFO: current pass: 11, start read image
+[2019-12-20 13:03:11,969.969] train.py [line:204] INFO: start pass 11, batch 0
+[2019-12-20 13:03:14,311.311] train.py [line:209] INFO: end pass 11, train batch 1 exe.run
+[2019-12-20 13:03:14,311.311] train.py [line:227] INFO: end pass 11, batch 1, loss 225.5854949951172 time 2.34 sec
+[2019-12-20 13:03:14,311.311] train.py [line:233] INFO: pass 11 train result, current pass mean loss: 225.5854949951172
+[2019-12-20 13:03:14,311.311] train.py [line:199] INFO: current pass: 12, start read image
+[2019-12-20 13:03:14,451.451] train.py [line:204] INFO: start pass 12, batch 0
+[2019-12-20 13:03:17,166.166] train.py [line:209] INFO: end pass 12, train batch 1 exe.run
+[2019-12-20 13:03:17,166.166] train.py [line:227] INFO: end pass 12, batch 1, loss 252.2652587890625 time 2.71 sec
+[2019-12-20 13:03:17,166.166] train.py [line:233] INFO: pass 12 train result, current pass mean loss: 252.2652587890625
+[2019-12-20 13:03:17,166.166] train.py [line:199] INFO: current pass: 13, start read image
+[2019-12-20 13:03:17,306.306] train.py [line:204] INFO: start pass 13, batch 0
+[2019-12-20 13:03:19,896.896] train.py [line:209] INFO: end pass 13, train batch 1 exe.run
+[2019-12-20 13:03:19,896.896] train.py [line:227] INFO: end pass 13, batch 1, loss 278.0809326171875 time 2.59 sec
+[2019-12-20 13:03:19,896.896] train.py [line:233] INFO: pass 13 train result, current pass mean loss: 278.0809326171875
+[2019-12-20 13:03:19,896.896] train.py [line:199] INFO: current pass: 14, start read image
+[2019-12-20 13:03:20,036.036] train.py [line:204] INFO: start pass 14, batch 0
+[2019-12-20 13:03:22,376.376] train.py [line:209] INFO: end pass 14, train batch 1 exe.run
+[2019-12-20 13:03:22,376.376] train.py [line:227] INFO: end pass 14, batch 1, loss 279.769775390625 time 2.34 sec
+[2019-12-20 13:03:22,392.392] train.py [line:233] INFO: pass 14 train result, current pass mean loss: 279.769775390625
+[2019-12-20 13:03:22,392.392] train.py [line:199] INFO: current pass: 15, start read image
+[2019-12-20 13:03:22,516.516] train.py [line:204] INFO: start pass 15, batch 0
+[2019-12-20 13:03:24,919.919] train.py [line:209] INFO: end pass 15, train batch 1 exe.run
+[2019-12-20 13:03:24,919.919] train.py [line:227] INFO: end pass 15, batch 1, loss 258.0577392578125 time 2.40 sec
+[2019-12-20 13:03:24,919.919] train.py [line:233] INFO: pass 15 train result, current pass mean loss: 258.0577392578125
+[2019-12-20 13:03:24,919.919] train.py [line:199] INFO: current pass: 16, start read image
+[2019-12-20 13:03:25,059.059] train.py [line:204] INFO: start pass 16, batch 0
+[2019-12-20 13:03:27,430.430] train.py [line:209] INFO: end pass 16, train batch 1 exe.run
+[2019-12-20 13:03:27,430.430] train.py [line:227] INFO: end pass 16, batch 1, loss 302.0777282714844 time 2.37 sec
+[2019-12-20 13:03:27,430.430] train.py [line:233] INFO: pass 16 train result, current pass mean loss: 302.0777282714844
+[2019-12-20 13:03:27,430.430] train.py [line:199] INFO: current pass: 17, start read image
+[2019-12-20 13:03:27,571.571] train.py [line:204] INFO: start pass 17, batch 0
+[2019-12-20 13:03:29,958.958] train.py [line:209] INFO: end pass 17, train batch 1 exe.run
+[2019-12-20 13:03:29,958.958] train.py [line:227] INFO: end pass 17, batch 1, loss 357.9631042480469 time 2.39 sec
+[2019-12-20 13:03:29,958.958] train.py [line:233] INFO: pass 17 train result, current pass mean loss: 357.9631042480469
+[2019-12-20 13:03:29,958.958] train.py [line:199] INFO: current pass: 18, start read image
+[2019-12-20 13:03:30,098.098] train.py [line:204] INFO: start pass 18, batch 0
+[2019-12-20 13:03:32,310.310] train.py [line:209] INFO: end pass 18, train batch 1 exe.run
+[2019-12-20 13:03:32,310.310] train.py [line:227] INFO: end pass 18, batch 1, loss 361.5380554199219 time 2.21 sec
+[2019-12-20 13:03:32,310.310] train.py [line:233] INFO: pass 18 train result, current pass mean loss: 361.5380554199219
+[2019-12-20 13:03:32,310.310] train.py [line:199] INFO: current pass: 19, start read image
+[2019-12-20 13:03:32,434.434] train.py [line:204] INFO: start pass 19, batch 0
+[2019-12-20 13:03:34,620.620] train.py [line:209] INFO: end pass 19, train batch 1 exe.run
+[2019-12-20 13:03:34,620.620] train.py [line:227] INFO: end pass 19, batch 1, loss 292.24005126953125 time 2.19 sec
+[2019-12-20 13:03:34,620.620] train.py [line:233] INFO: pass 19 train result, current pass mean loss: 292.24005126953125
+[2019-12-20 13:03:34,620.620] train.py [line:199] INFO: current pass: 20, start read image
+[2019-12-20 13:03:34,745.745] train.py [line:204] INFO: start pass 20, batch 0
+[2019-12-20 13:03:37,085.085] train.py [line:209] INFO: end pass 20, train batch 1 exe.run
+[2019-12-20 13:03:37,085.085] train.py [line:227] INFO: end pass 20, batch 1, loss 422.0009460449219 time 2.34 sec
+[2019-12-20 13:03:37,085.085] train.py [line:233] INFO: pass 20 train result, current pass mean loss: 422.0009460449219
+[2019-12-20 13:03:37,085.085] train.py [line:199] INFO: current pass: 21, start read image
+[2019-12-20 13:03:37,241.241] train.py [line:204] INFO: start pass 21, batch 0
+[2019-12-20 13:03:39,706.706] train.py [line:209] INFO: end pass 21, train batch 1 exe.run
+[2019-12-20 13:03:39,706.706] train.py [line:227] INFO: end pass 21, batch 1, loss 334.619384765625 time 2.46 sec
+[2019-12-20 13:03:39,706.706] train.py [line:233] INFO: pass 21 train result, current pass mean loss: 334.619384765625
+[2019-12-20 13:03:39,706.706] train.py [line:199] INFO: current pass: 22, start read image
+[2019-12-20 13:03:39,846.846] train.py [line:204] INFO: start pass 22, batch 0
+[2019-12-20 13:03:42,264.264] train.py [line:209] INFO: end pass 22, train batch 1 exe.run
+[2019-12-20 13:03:42,264.264] train.py [line:227] INFO: end pass 22, batch 1, loss 449.8111877441406 time 2.42 sec
+[2019-12-20 13:03:42,264.264] train.py [line:233] INFO: pass 22 train result, current pass mean loss: 449.8111877441406
+[2019-12-20 13:03:42,264.264] train.py [line:199] INFO: current pass: 23, start read image
+[2019-12-20 13:03:42,405.405] train.py [line:204] INFO: start pass 23, batch 0
+[2019-12-20 13:03:44,888.888] train.py [line:209] INFO: end pass 23, train batch 1 exe.run
+[2019-12-20 13:03:44,888.888] train.py [line:227] INFO: end pass 23, batch 1, loss 516.07861328125 time 2.48 sec
+[2019-12-20 13:03:44,888.888] train.py [line:233] INFO: pass 23 train result, current pass mean loss: 516.07861328125
+[2019-12-20 13:03:44,888.888] train.py [line:199] INFO: current pass: 24, start read image
+[2019-12-20 13:03:45,013.013] train.py [line:204] INFO: start pass 24, batch 0
+[2019-12-20 13:03:47,150.150] train.py [line:209] INFO: end pass 24, train batch 1 exe.run
+[2019-12-20 13:03:47,150.150] train.py [line:227] INFO: end pass 24, batch 1, loss 474.6689758300781 time 2.14 sec
+[2019-12-20 13:03:47,150.150] train.py [line:233] INFO: pass 24 train result, current pass mean loss: 474.6689758300781
+[2019-12-20 13:03:47,166.166] train.py [line:199] INFO: current pass: 25, start read image
+[2019-12-20 13:03:47,290.290] train.py [line:204] INFO: start pass 25, batch 0
+[2019-12-20 13:03:49,630.630] train.py [line:209] INFO: end pass 25, train batch 1 exe.run
+[2019-12-20 13:03:49,630.630] train.py [line:227] INFO: end pass 25, batch 1, loss 335.5688171386719 time 2.34 sec
+[2019-12-20 13:03:49,630.630] train.py [line:233] INFO: pass 25 train result, current pass mean loss: 335.5688171386719
+[2019-12-20 13:03:49,630.630] train.py [line:199] INFO: current pass: 26, start read image
+[2019-12-20 13:03:49,771.771] train.py [line:204] INFO: start pass 26, batch 0
+[2019-12-20 13:03:52,173.173] train.py [line:209] INFO: end pass 26, train batch 1 exe.run
+[2019-12-20 13:03:52,173.173] train.py [line:227] INFO: end pass 26, batch 1, loss 343.7071533203125 time 2.40 sec
+[2019-12-20 13:03:52,173.173] train.py [line:233] INFO: pass 26 train result, current pass mean loss: 343.7071533203125
+[2019-12-20 13:03:52,173.173] train.py [line:199] INFO: current pass: 27, start read image
+[2019-12-20 13:03:52,298.298] train.py [line:204] INFO: start pass 27, batch 0
+[2019-12-20 13:03:54,716.716] train.py [line:209] INFO: end pass 27, train batch 1 exe.run
+[2019-12-20 13:03:54,716.716] train.py [line:227] INFO: end pass 27, batch 1, loss 579.1945190429688 time 2.42 sec
+[2019-12-20 13:03:54,716.716] train.py [line:233] INFO: pass 27 train result, current pass mean loss: 579.1945190429688
+[2019-12-20 13:03:54,716.716] train.py [line:199] INFO: current pass: 28, start read image
+[2019-12-20 13:03:54,856.856] train.py [line:204] INFO: start pass 28, batch 0
+[2019-12-20 13:03:57,352.352] train.py [line:209] INFO: end pass 28, train batch 1 exe.run
+[2019-12-20 13:03:57,352.352] train.py [line:227] INFO: end pass 28, batch 1, loss 608.5437622070312 time 2.50 sec
+[2019-12-20 13:03:57,352.352] train.py [line:233] INFO: pass 28 train result, current pass mean loss: 608.5437622070312
+[2019-12-20 13:03:57,352.352] train.py [line:199] INFO: current pass: 29, start read image
+[2019-12-20 13:03:57,493.493] train.py [line:204] INFO: start pass 29, batch 0
+[2019-12-20 13:03:59,973.973] train.py [line:209] INFO: end pass 29, train batch 1 exe.run
+[2019-12-20 13:03:59,973.973] train.py [line:227] INFO: end pass 29, batch 1, loss 362.07568359375 time 2.48 sec
+[2019-12-20 13:03:59,989.989] train.py [line:233] INFO: pass 29 train result, current pass mean loss: 362.07568359375
+[2019-12-20 13:03:59,989.989] train.py [line:199] INFO: current pass: 30, start read image
+[2019-12-20 13:04:00,113.113] train.py [line:204] INFO: start pass 30, batch 0
+[2019-12-20 13:04:02,563.563] train.py [line:209] INFO: end pass 30, train batch 1 exe.run
+[2019-12-20 13:04:02,563.563] train.py [line:227] INFO: end pass 30, batch 1, loss 389.4748229980469 time 2.45 sec
+[2019-12-20 13:04:02,563.563] train.py [line:233] INFO: pass 30 train result, current pass mean loss: 389.4748229980469
+[2019-12-20 13:04:02,563.563] train.py [line:199] INFO: current pass: 31, start read image
+[2019-12-20 13:04:02,703.703] train.py [line:204] INFO: start pass 31, batch 0
+[2019-12-20 13:04:05,168.168] train.py [line:209] INFO: end pass 31, train batch 1 exe.run
+[2019-12-20 13:04:05,168.168] train.py [line:227] INFO: end pass 31, batch 1, loss 355.4065246582031 time 2.46 sec
+[2019-12-20 13:04:05,168.168] train.py [line:233] INFO: pass 31 train result, current pass mean loss: 355.4065246582031
+[2019-12-20 13:04:05,168.168] train.py [line:199] INFO: current pass: 32, start read image
+[2019-12-20 13:04:05,324.324] train.py [line:204] INFO: start pass 32, batch 0
+[2019-12-20 13:04:07,804.804] train.py [line:209] INFO: end pass 32, train batch 1 exe.run
+[2019-12-20 13:04:07,804.804] train.py [line:227] INFO: end pass 32, batch 1, loss 360.49407958984375 time 2.48 sec
+[2019-12-20 13:04:07,804.804] train.py [line:233] INFO: pass 32 train result, current pass mean loss: 360.49407958984375
+[2019-12-20 13:04:07,820.820] train.py [line:199] INFO: current pass: 33, start read image
+[2019-12-20 13:04:07,960.960] train.py [line:204] INFO: start pass 33, batch 0
+[2019-12-20 13:04:10,425.425] train.py [line:209] INFO: end pass 33, train batch 1 exe.run
+[2019-12-20 13:04:10,425.425] train.py [line:227] INFO: end pass 33, batch 1, loss 729.5111694335938 time 2.46 sec
+[2019-12-20 13:04:10,425.425] train.py [line:233] INFO: pass 33 train result, current pass mean loss: 729.5111694335938
+[2019-12-20 13:04:10,425.425] train.py [line:199] INFO: current pass: 34, start read image
+[2019-12-20 13:04:10,565.565] train.py [line:204] INFO: start pass 34, batch 0
+[2019-12-20 13:04:13,108.108] train.py [line:209] INFO: end pass 34, train batch 1 exe.run
+[2019-12-20 13:04:13,108.108] train.py [line:227] INFO: end pass 34, batch 1, loss 310.2383728027344 time 2.54 sec
+[2019-12-20 13:04:13,108.108] train.py [line:233] INFO: pass 34 train result, current pass mean loss: 310.2383728027344
+[2019-12-20 13:04:13,108.108] train.py [line:199] INFO: current pass: 35, start read image
+[2019-12-20 13:04:13,248.248] train.py [line:204] INFO: start pass 35, batch 0
+[2019-12-20 13:04:15,823.823] train.py [line:209] INFO: end pass 35, train batch 1 exe.run
+[2019-12-20 13:04:15,823.823] train.py [line:227] INFO: end pass 35, batch 1, loss 746.9188232421875 time 2.57 sec
+[2019-12-20 13:04:15,823.823] train.py [line:233] INFO: pass 35 train result, current pass mean loss: 746.9188232421875
+[2019-12-20 13:04:15,823.823] train.py [line:199] INFO: current pass: 36, start read image
+[2019-12-20 13:04:15,995.995] train.py [line:204] INFO: start pass 36, batch 0
+[2019-12-20 13:04:18,834.834] train.py [line:209] INFO: end pass 36, train batch 1 exe.run
+[2019-12-20 13:04:18,834.834] train.py [line:227] INFO: end pass 36, batch 1, loss 753.312744140625 time 2.84 sec
+[2019-12-20 13:04:18,834.834] train.py [line:233] INFO: pass 36 train result, current pass mean loss: 753.312744140625
+[2019-12-20 13:04:18,834.834] train.py [line:199] INFO: current pass: 37, start read image
+[2019-12-20 13:04:19,006.006] train.py [line:204] INFO: start pass 37, batch 0
+[2019-12-20 13:04:21,502.502] train.py [line:209] INFO: end pass 37, train batch 1 exe.run
+[2019-12-20 13:04:21,502.502] train.py [line:227] INFO: end pass 37, batch 1, loss 665.4205322265625 time 2.50 sec
+[2019-12-20 13:04:21,502.502] train.py [line:233] INFO: pass 37 train result, current pass mean loss: 665.4205322265625
+[2019-12-20 13:04:21,502.502] train.py [line:199] INFO: current pass: 38, start read image
+[2019-12-20 13:04:21,658.658] train.py [line:204] INFO: start pass 38, batch 0
+[2019-12-20 13:04:24,107.107] train.py [line:209] INFO: end pass 38, train batch 1 exe.run
+[2019-12-20 13:04:24,107.107] train.py [line:227] INFO: end pass 38, batch 1, loss 774.8591918945312 time 2.45 sec
+[2019-12-20 13:04:24,107.107] train.py [line:233] INFO: pass 38 train result, current pass mean loss: 774.8591918945312
+[2019-12-20 13:04:24,107.107] train.py [line:199] INFO: current pass: 39, start read image
+[2019-12-20 13:04:24,247.247] train.py [line:204] INFO: start pass 39, batch 0
+[2019-12-20 13:04:26,743.743] train.py [line:209] INFO: end pass 39, train batch 1 exe.run
+[2019-12-20 13:04:26,743.743] train.py [line:227] INFO: end pass 39, batch 1, loss 421.216064453125 time 2.50 sec
+[2019-12-20 13:04:26,743.743] train.py [line:233] INFO: pass 39 train result, current pass mean loss: 421.216064453125
+[2019-12-20 13:04:26,743.743] train.py [line:199] INFO: current pass: 40, start read image
+[2019-12-20 13:04:26,884.884] train.py [line:204] INFO: start pass 40, batch 0
+[2019-12-20 13:04:29,364.364] train.py [line:209] INFO: end pass 40, train batch 1 exe.run
+[2019-12-20 13:04:29,364.364] train.py [line:227] INFO: end pass 40, batch 1, loss 776.8479614257812 time 2.48 sec
+[2019-12-20 13:04:29,364.364] train.py [line:233] INFO: pass 40 train result, current pass mean loss: 776.8479614257812
+[2019-12-20 13:04:29,364.364] train.py [line:199] INFO: current pass: 41, start read image
+[2019-12-20 13:04:29,504.504] train.py [line:204] INFO: start pass 41, batch 0
+[2019-12-20 13:04:32,094.094] train.py [line:209] INFO: end pass 41, train batch 1 exe.run
+[2019-12-20 13:04:32,094.094] train.py [line:227] INFO: end pass 41, batch 1, loss 389.20928955078125 time 2.59 sec
+[2019-12-20 13:04:32,094.094] train.py [line:233] INFO: pass 41 train result, current pass mean loss: 389.20928955078125
+[2019-12-20 13:04:32,094.094] train.py [line:199] INFO: current pass: 42, start read image
+[2019-12-20 13:04:32,234.234] train.py [line:204] INFO: start pass 42, batch 0
+[2019-12-20 13:04:34,730.730] train.py [line:209] INFO: end pass 42, train batch 1 exe.run
+[2019-12-20 13:04:34,730.730] train.py [line:227] INFO: end pass 42, batch 1, loss 391.8494873046875 time 2.50 sec
+[2019-12-20 13:04:34,730.730] train.py [line:233] INFO: pass 42 train result, current pass mean loss: 391.8494873046875
+[2019-12-20 13:04:34,730.730] train.py [line:199] INFO: current pass: 43, start read image
+[2019-12-20 13:04:34,855.855] train.py [line:204] INFO: start pass 43, batch 0
+[2019-12-20 13:04:37,368.368] train.py [line:209] INFO: end pass 43, train batch 1 exe.run
+[2019-12-20 13:04:37,368.368] train.py [line:227] INFO: end pass 43, batch 1, loss 330.4815673828125 time 2.51 sec
+[2019-12-20 13:04:37,368.368] train.py [line:233] INFO: pass 43 train result, current pass mean loss: 330.4815673828125
+[2019-12-20 13:04:37,368.368] train.py [line:199] INFO: current pass: 44, start read image
+[2019-12-20 13:04:37,508.508] train.py [line:204] INFO: start pass 44, batch 0
+[2019-12-20 13:04:39,973.973] train.py [line:209] INFO: end pass 44, train batch 1 exe.run
+[2019-12-20 13:04:39,973.973] train.py [line:227] INFO: end pass 44, batch 1, loss 393.43017578125 time 2.46 sec
+[2019-12-20 13:04:39,973.973] train.py [line:233] INFO: pass 44 train result, current pass mean loss: 393.43017578125
+[2019-12-20 13:04:39,973.973] train.py [line:199] INFO: current pass: 45, start read image
+[2019-12-20 13:04:40,113.113] train.py [line:204] INFO: start pass 45, batch 0
+[2019-12-20 13:04:42,500.500] train.py [line:209] INFO: end pass 45, train batch 1 exe.run
+[2019-12-20 13:04:42,500.500] train.py [line:227] INFO: end pass 45, batch 1, loss 332.26873779296875 time 2.39 sec
+[2019-12-20 13:04:42,500.500] train.py [line:233] INFO: pass 45 train result, current pass mean loss: 332.26873779296875
+[2019-12-20 13:04:42,500.500] train.py [line:199] INFO: current pass: 46, start read image
+[2019-12-20 13:04:42,625.625] train.py [line:204] INFO: start pass 46, batch 0
+[2019-12-20 13:04:44,809.809] train.py [line:209] INFO: end pass 46, train batch 1 exe.run
+[2019-12-20 13:04:44,809.809] train.py [line:227] INFO: end pass 46, batch 1, loss 429.8721923828125 time 2.18 sec
+[2019-12-20 13:04:44,809.809] train.py [line:233] INFO: pass 46 train result, current pass mean loss: 429.8721923828125
+[2019-12-20 13:04:44,809.809] train.py [line:199] INFO: current pass: 47, start read image
+[2019-12-20 13:04:44,949.949] train.py [line:204] INFO: start pass 47, batch 0
+[2019-12-20 13:04:47,494.494] train.py [line:209] INFO: end pass 47, train batch 1 exe.run
+[2019-12-20 13:04:47,494.494] train.py [line:227] INFO: end pass 47, batch 1, loss 680.8779296875 time 2.54 sec
+[2019-12-20 13:04:47,494.494] train.py [line:233] INFO: pass 47 train result, current pass mean loss: 680.8779296875
+[2019-12-20 13:04:47,494.494] train.py [line:199] INFO: current pass: 48, start read image
+[2019-12-20 13:04:47,650.650] train.py [line:204] INFO: start pass 48, batch 0
+[2019-12-20 13:04:50,146.146] train.py [line:209] INFO: end pass 48, train batch 1 exe.run
+[2019-12-20 13:04:50,146.146] train.py [line:227] INFO: end pass 48, batch 1, loss 397.1781005859375 time 2.50 sec
+[2019-12-20 13:04:50,146.146] train.py [line:233] INFO: pass 48 train result, current pass mean loss: 397.1781005859375
+[2019-12-20 13:04:50,146.146] train.py [line:199] INFO: current pass: 49, start read image
+[2019-12-20 13:04:50,286.286] train.py [line:204] INFO: start pass 49, batch 0
+[2019-12-20 13:04:52,798.798] train.py [line:209] INFO: end pass 49, train batch 1 exe.run
+[2019-12-20 13:04:52,798.798] train.py [line:227] INFO: end pass 49, batch 1, loss 714.6615600585938 time 2.51 sec
+[2019-12-20 13:04:52,798.798] train.py [line:233] INFO: pass 49 train result, current pass mean loss: 714.6615600585938
+[2019-12-20 13:04:52,798.798] train.py [line:199] INFO: current pass: 50, start read image
+[2019-12-20 13:04:52,923.923] train.py [line:204] INFO: start pass 50, batch 0
+[2019-12-20 13:04:55,465.465] train.py [line:209] INFO: end pass 50, train batch 1 exe.run
+[2019-12-20 13:04:55,465.465] train.py [line:227] INFO: end pass 50, batch 1, loss 776.6536865234375 time 2.54 sec
+[2019-12-20 13:04:55,465.465] train.py [line:233] INFO: pass 50 train result, current pass mean loss: 776.6536865234375
+[2019-12-20 13:04:55,481.481] train.py [line:199] INFO: current pass: 51, start read image
+[2019-12-20 13:04:55,621.621] train.py [line:204] INFO: start pass 51, batch 0
+[2019-12-20 13:05:12,766.766] train.py [line:175] INFO: start train YOLOv3-block
+[2019-12-20 13:05:12,766.766] train_config.py [line:69] INFO: train config use_gpu:False
+[2019-12-20 13:05:12,781.781] train_config.py [line:70] INFO: train config train_batch_size:3
+[2019-12-20 13:05:12,781.781] train_config.py [line:71] INFO: train config num_epochs:60
+[2019-12-20 13:05:12,781.781] train_config.py [line:72] INFO: train config train_data_dir:../data/trainImageSet/
+[2019-12-20 13:05:12,781.781] train_config.py [line:73] INFO: train config image_count:3
+[2019-12-20 13:05:12,781.781] train_config.py [line:74] INFO: train config max_box_num:35
+[2019-12-20 13:05:12,781.781] train_config.py [line:75] INFO: train config continue_train:False
+[2019-12-20 13:05:12,781.781] train_config.py [line:76] INFO: train config pretrained:False
+[2019-12-20 13:05:12,781.781] train_config.py [line:77] INFO: train config eval_data_dir:../data/evalImageSet/
+[2019-12-20 13:05:12,797.797] train.py [line:180] INFO: build network and program
+[2019-12-20 13:05:13,031.031] train.py [line:141] INFO: current out shape:(-1, 13, 10, 10)
+[2019-12-20 13:05:13,046.046] train.py [line:141] INFO: current out shape:(-1, 13, 20, 20)
+[2019-12-20 13:05:13,046.046] train.py [line:141] INFO: current out shape:(-1, 13, 40, 40)
+[2019-12-20 13:05:13,046.046] train.py [line:141] INFO: current out shape:(-1, 13, 80, 80)
+[2019-12-20 13:05:13,046.046] train.py [line:75] INFO: origin learning rate: 0.01 boundaries: [18, 30, 42, 54]  values: [0.01, 0.005, 0.0025, 0.001, 0.0002]
+[2019-12-20 13:05:13,577.577] train.py [line:189] INFO: loss name:traintmp_4
+[2019-12-20 13:05:13,577.577] train.py [line:190] INFO: build executor and init params
+[2019-12-20 13:05:13,811.811] train.py [line:199] INFO: current pass: 0, start read image
+[2019-12-20 13:05:13,951.951] train.py [line:204] INFO: start pass 0, batch 0
+[2019-12-20 13:05:16,744.744] train.py [line:209] INFO: end pass 0, train batch 1 exe.run
+[2019-12-20 13:05:16,759.759] train.py [line:227] INFO: end pass 0, batch 1, loss 237.2254638671875 time 2.81 sec
+[2019-12-20 13:05:16,759.759] train.py [line:233] INFO: pass 0 train result, current pass mean loss: 237.2254638671875
+[2019-12-20 13:05:16,759.759] train.py [line:235] INFO: temp save pass 0 train result, current best pass mean loss: 237.2254638671875
+[2019-12-20 13:05:17,633.633] train.py [line:199] INFO: current pass: 1, start read image
+[2019-12-20 13:05:17,804.804] train.py [line:204] INFO: start pass 1, batch 0
+[2019-12-20 13:05:21,118.118] train.py [line:209] INFO: end pass 1, train batch 1 exe.run
+[2019-12-20 13:05:21,118.118] train.py [line:227] INFO: end pass 1, batch 1, loss 195.2494354248047 time 3.31 sec
+[2019-12-20 13:05:21,118.118] train.py [line:233] INFO: pass 1 train result, current pass mean loss: 195.2494354248047
+[2019-12-20 13:05:21,118.118] train.py [line:235] INFO: temp save pass 1 train result, current best pass mean loss: 195.2494354248047
+[2019-12-20 13:05:21,866.866] train.py [line:199] INFO: current pass: 2, start read image
+[2019-12-20 13:05:22,022.022] train.py [line:204] INFO: start pass 2, batch 0
+[2019-12-20 13:05:24,581.581] train.py [line:209] INFO: end pass 2, train batch 1 exe.run
+[2019-12-20 13:05:24,596.596] train.py [line:227] INFO: end pass 2, batch 1, loss 143.62570190429688 time 2.56 sec
+[2019-12-20 13:05:24,596.596] train.py [line:233] INFO: pass 2 train result, current pass mean loss: 143.62570190429688
+[2019-12-20 13:05:24,596.596] train.py [line:235] INFO: temp save pass 2 train result, current best pass mean loss: 143.62570190429688
+[2019-12-20 13:05:25,407.407] train.py [line:199] INFO: current pass: 3, start read image
+[2019-12-20 13:05:25,579.579] train.py [line:204] INFO: start pass 3, batch 0
+[2019-12-20 13:05:28,075.075] train.py [line:209] INFO: end pass 3, train batch 1 exe.run
+[2019-12-20 13:05:28,075.075] train.py [line:227] INFO: end pass 3, batch 1, loss 133.26785278320312 time 2.50 sec
+[2019-12-20 13:05:28,075.075] train.py [line:233] INFO: pass 3 train result, current pass mean loss: 133.26785278320312
+[2019-12-20 13:05:28,075.075] train.py [line:235] INFO: temp save pass 3 train result, current best pass mean loss: 133.26785278320312
+[2019-12-20 13:05:28,730.730] train.py [line:199] INFO: current pass: 4, start read image
+[2019-12-20 13:05:28,871.871] train.py [line:204] INFO: start pass 4, batch 0
+[2019-12-20 13:05:31,335.335] train.py [line:209] INFO: end pass 4, train batch 1 exe.run
+[2019-12-20 13:05:31,335.335] train.py [line:227] INFO: end pass 4, batch 1, loss 104.76582336425781 time 2.46 sec
+[2019-12-20 13:05:31,351.351] train.py [line:233] INFO: pass 4 train result, current pass mean loss: 104.76582336425781
+[2019-12-20 13:05:31,351.351] train.py [line:235] INFO: temp save pass 4 train result, current best pass mean loss: 104.76582336425781
+[2019-12-20 13:05:32,115.115] train.py [line:199] INFO: current pass: 5, start read image
+[2019-12-20 13:05:32,271.271] train.py [line:204] INFO: start pass 5, batch 0
+[2019-12-20 13:05:34,767.767] train.py [line:209] INFO: end pass 5, train batch 1 exe.run
+[2019-12-20 13:05:34,767.767] train.py [line:227] INFO: end pass 5, batch 1, loss 125.7979736328125 time 2.50 sec
+[2019-12-20 13:05:34,767.767] train.py [line:233] INFO: pass 5 train result, current pass mean loss: 125.7979736328125
+[2019-12-20 13:05:34,767.767] train.py [line:199] INFO: current pass: 6, start read image
+[2019-12-20 13:05:34,908.908] train.py [line:204] INFO: start pass 6, batch 0
+[2019-12-20 13:05:37,373.373] train.py [line:209] INFO: end pass 6, train batch 1 exe.run
+[2019-12-20 13:05:37,373.373] train.py [line:227] INFO: end pass 6, batch 1, loss 173.50582885742188 time 2.47 sec
+[2019-12-20 13:05:37,373.373] train.py [line:233] INFO: pass 6 train result, current pass mean loss: 173.50582885742188
+[2019-12-20 13:05:37,373.373] train.py [line:199] INFO: current pass: 7, start read image
+[2019-12-20 13:05:37,498.498] train.py [line:204] INFO: start pass 7, batch 0
+[2019-12-20 13:05:39,998.998] train.py [line:209] INFO: end pass 7, train batch 1 exe.run
+[2019-12-20 13:05:39,998.998] train.py [line:227] INFO: end pass 7, batch 1, loss 167.49871826171875 time 2.50 sec
+[2019-12-20 13:05:39,998.998] train.py [line:233] INFO: pass 7 train result, current pass mean loss: 167.49871826171875
+[2019-12-20 13:05:39,998.998] train.py [line:199] INFO: current pass: 8, start read image
+[2019-12-20 13:05:40,139.139] train.py [line:204] INFO: start pass 8, batch 0
+[2019-12-20 13:05:42,806.806] train.py [line:209] INFO: end pass 8, train batch 1 exe.run
+[2019-12-20 13:05:42,806.806] train.py [line:227] INFO: end pass 8, batch 1, loss 280.5580749511719 time 2.67 sec
+[2019-12-20 13:05:42,806.806] train.py [line:233] INFO: pass 8 train result, current pass mean loss: 280.5580749511719
+[2019-12-20 13:05:42,806.806] train.py [line:199] INFO: current pass: 9, start read image
+[2019-12-20 13:05:42,978.978] train.py [line:204] INFO: start pass 9, batch 0
+[2019-12-20 13:05:45,458.458] train.py [line:209] INFO: end pass 9, train batch 1 exe.run
+[2019-12-20 13:05:45,458.458] train.py [line:227] INFO: end pass 9, batch 1, loss 375.64898681640625 time 2.46 sec
+[2019-12-20 13:05:45,458.458] train.py [line:233] INFO: pass 9 train result, current pass mean loss: 375.64898681640625
+[2019-12-20 13:05:45,458.458] train.py [line:199] INFO: current pass: 10, start read image
+[2019-12-20 13:05:45,599.599] train.py [line:204] INFO: start pass 10, batch 0
+[2019-12-20 13:05:48,032.032] train.py [line:209] INFO: end pass 10, train batch 1 exe.run
+[2019-12-20 13:05:48,032.032] train.py [line:227] INFO: end pass 10, batch 1, loss 260.7470397949219 time 2.43 sec
+[2019-12-20 13:05:48,048.048] train.py [line:233] INFO: pass 10 train result, current pass mean loss: 260.7470397949219
+[2019-12-20 13:05:48,048.048] train.py [line:199] INFO: current pass: 11, start read image
+[2019-12-20 13:05:48,157.157] train.py [line:204] INFO: start pass 11, batch 0
+[2019-12-20 13:05:50,646.646] train.py [line:209] INFO: end pass 11, train batch 1 exe.run
+[2019-12-20 13:05:50,646.646] train.py [line:227] INFO: end pass 11, batch 1, loss 245.58763122558594 time 2.47 sec
+[2019-12-20 13:05:50,646.646] train.py [line:233] INFO: pass 11 train result, current pass mean loss: 245.58763122558594
+[2019-12-20 13:05:50,662.662] train.py [line:199] INFO: current pass: 12, start read image
+[2019-12-20 13:05:50,787.787] train.py [line:204] INFO: start pass 12, batch 0
+[2019-12-20 13:05:53,267.267] train.py [line:209] INFO: end pass 12, train batch 1 exe.run
+[2019-12-20 13:05:53,267.267] train.py [line:227] INFO: end pass 12, batch 1, loss 127.67896270751953 time 2.46 sec
+[2019-12-20 13:05:53,267.267] train.py [line:233] INFO: pass 12 train result, current pass mean loss: 127.67896270751953
+[2019-12-20 13:05:53,267.267] train.py [line:199] INFO: current pass: 13, start read image
+[2019-12-20 13:05:53,423.423] train.py [line:204] INFO: start pass 13, batch 0
+[2019-12-20 13:05:55,950.950] train.py [line:209] INFO: end pass 13, train batch 1 exe.run
+[2019-12-20 13:05:55,950.950] train.py [line:227] INFO: end pass 13, batch 1, loss 180.2903289794922 time 2.53 sec
+[2019-12-20 13:05:55,950.950] train.py [line:233] INFO: pass 13 train result, current pass mean loss: 180.2903289794922
+[2019-12-20 13:05:55,950.950] train.py [line:199] INFO: current pass: 14, start read image
+[2019-12-20 13:05:56,091.091] train.py [line:204] INFO: start pass 14, batch 0
+[2019-12-20 13:05:58,571.571] train.py [line:209] INFO: end pass 14, train batch 1 exe.run
+[2019-12-20 13:05:58,571.571] train.py [line:227] INFO: end pass 14, batch 1, loss 340.1107482910156 time 2.48 sec
+[2019-12-20 13:05:58,571.571] train.py [line:233] INFO: pass 14 train result, current pass mean loss: 340.1107482910156
+[2019-12-20 13:05:58,587.587] train.py [line:199] INFO: current pass: 15, start read image
+[2019-12-20 13:05:58,743.743] train.py [line:204] INFO: start pass 15, batch 0
+[2019-12-20 13:06:01,285.285] train.py [line:209] INFO: end pass 15, train batch 1 exe.run
+[2019-12-20 13:06:01,285.285] train.py [line:227] INFO: end pass 15, batch 1, loss 272.7250061035156 time 2.53 sec
+[2019-12-20 13:06:01,285.285] train.py [line:233] INFO: pass 15 train result, current pass mean loss: 272.7250061035156
+[2019-12-20 13:06:01,285.285] train.py [line:199] INFO: current pass: 16, start read image
+[2019-12-20 13:06:01,441.441] train.py [line:204] INFO: start pass 16, batch 0
+[2019-12-20 13:06:03,781.781] train.py [line:209] INFO: end pass 16, train batch 1 exe.run
+[2019-12-20 13:06:03,781.781] train.py [line:227] INFO: end pass 16, batch 1, loss 237.28329467773438 time 2.34 sec
+[2019-12-20 13:06:03,781.781] train.py [line:233] INFO: pass 16 train result, current pass mean loss: 237.28329467773438
+[2019-12-20 13:06:03,781.781] train.py [line:199] INFO: current pass: 17, start read image
+[2019-12-20 13:06:03,906.906] train.py [line:204] INFO: start pass 17, batch 0
+[2019-12-20 13:06:06,215.215] train.py [line:209] INFO: end pass 17, train batch 1 exe.run
+[2019-12-20 13:06:06,215.215] train.py [line:227] INFO: end pass 17, batch 1, loss 352.2398681640625 time 2.31 sec
+[2019-12-20 13:06:06,215.215] train.py [line:233] INFO: pass 17 train result, current pass mean loss: 352.2398681640625
+[2019-12-20 13:06:06,215.215] train.py [line:199] INFO: current pass: 18, start read image
+[2019-12-20 13:06:06,371.371] train.py [line:204] INFO: start pass 18, batch 0
+[2019-12-20 13:06:08,945.945] train.py [line:209] INFO: end pass 18, train batch 1 exe.run
+[2019-12-20 13:06:08,945.945] train.py [line:227] INFO: end pass 18, batch 1, loss 413.4468994140625 time 2.57 sec
+[2019-12-20 13:06:08,945.945] train.py [line:233] INFO: pass 18 train result, current pass mean loss: 413.4468994140625
+[2019-12-20 13:06:08,945.945] train.py [line:199] INFO: current pass: 19, start read image
+[2019-12-20 13:06:09,085.085] train.py [line:204] INFO: start pass 19, batch 0
+[2019-12-20 13:06:11,613.613] train.py [line:209] INFO: end pass 19, train batch 1 exe.run
+[2019-12-20 13:06:11,613.613] train.py [line:227] INFO: end pass 19, batch 1, loss 244.6214599609375 time 2.53 sec
+[2019-12-20 13:06:11,613.613] train.py [line:233] INFO: pass 19 train result, current pass mean loss: 244.6214599609375
+[2019-12-20 13:06:11,613.613] train.py [line:199] INFO: current pass: 20, start read image
+[2019-12-20 13:06:11,769.769] train.py [line:204] INFO: start pass 20, batch 0
+[2019-12-20 13:06:14,280.280] train.py [line:209] INFO: end pass 20, train batch 1 exe.run
+[2019-12-20 13:06:14,280.280] train.py [line:227] INFO: end pass 20, batch 1, loss 369.7262268066406 time 2.51 sec
+[2019-12-20 13:06:14,280.280] train.py [line:233] INFO: pass 20 train result, current pass mean loss: 369.7262268066406
+[2019-12-20 13:06:14,296.296] train.py [line:199] INFO: current pass: 21, start read image
+[2019-12-20 13:06:14,436.436] train.py [line:204] INFO: start pass 21, batch 0
+[2019-12-20 13:06:18,274.274] train.py [line:209] INFO: end pass 21, train batch 1 exe.run
+[2019-12-20 13:06:18,274.274] train.py [line:227] INFO: end pass 21, batch 1, loss 256.4396667480469 time 3.84 sec
+[2019-12-20 13:06:18,274.274] train.py [line:233] INFO: pass 21 train result, current pass mean loss: 256.4396667480469
+[2019-12-20 13:06:18,274.274] train.py [line:199] INFO: current pass: 22, start read image
+[2019-12-20 13:06:18,492.492] train.py [line:204] INFO: start pass 22, batch 0
+[2019-12-20 13:06:22,349.349] train.py [line:209] INFO: end pass 22, train batch 1 exe.run
+[2019-12-20 13:06:22,349.349] train.py [line:227] INFO: end pass 22, batch 1, loss 409.8407897949219 time 3.86 sec
+[2019-12-20 13:06:22,365.365] train.py [line:233] INFO: pass 22 train result, current pass mean loss: 409.8407897949219
+[2019-12-20 13:06:22,365.365] train.py [line:199] INFO: current pass: 23, start read image
+[2019-12-20 13:06:22,521.521] train.py [line:204] INFO: start pass 23, batch 0
+[2019-12-20 13:06:25,922.922] train.py [line:209] INFO: end pass 23, train batch 1 exe.run
+[2019-12-20 13:06:25,922.922] train.py [line:227] INFO: end pass 23, batch 1, loss 290.41058349609375 time 3.40 sec
+[2019-12-20 13:06:25,922.922] train.py [line:233] INFO: pass 23 train result, current pass mean loss: 290.41058349609375
+[2019-12-20 13:06:25,937.937] train.py [line:199] INFO: current pass: 24, start read image
+[2019-12-20 13:06:26,078.078] train.py [line:204] INFO: start pass 24, batch 0
+[2019-12-20 13:06:29,229.229] train.py [line:209] INFO: end pass 24, train batch 1 exe.run
+[2019-12-20 13:06:29,229.229] train.py [line:227] INFO: end pass 24, batch 1, loss 479.90557861328125 time 3.14 sec
+[2019-12-20 13:06:29,229.229] train.py [line:233] INFO: pass 24 train result, current pass mean loss: 479.90557861328125
+[2019-12-20 13:06:29,229.229] train.py [line:199] INFO: current pass: 25, start read image
+[2019-12-20 13:06:29,432.432] train.py [line:204] INFO: start pass 25, batch 0
+[2019-12-20 13:06:32,661.661] train.py [line:209] INFO: end pass 25, train batch 1 exe.run
+[2019-12-20 13:06:32,661.661] train.py [line:227] INFO: end pass 25, batch 1, loss 306.053955078125 time 3.23 sec
+[2019-12-20 13:06:32,661.661] train.py [line:233] INFO: pass 25 train result, current pass mean loss: 306.053955078125
+[2019-12-20 13:06:32,661.661] train.py [line:199] INFO: current pass: 26, start read image
+[2019-12-20 13:06:32,833.833] train.py [line:204] INFO: start pass 26, batch 0
+[2019-12-20 13:06:36,031.031] train.py [line:209] INFO: end pass 26, train batch 1 exe.run
+[2019-12-20 13:06:36,031.031] train.py [line:227] INFO: end pass 26, batch 1, loss 506.4200744628906 time 3.20 sec
+[2019-12-20 13:06:36,031.031] train.py [line:233] INFO: pass 26 train result, current pass mean loss: 506.4200744628906
+[2019-12-20 13:06:36,031.031] train.py [line:199] INFO: current pass: 27, start read image
+[2019-12-20 13:06:36,218.218] train.py [line:204] INFO: start pass 27, batch 0
