@@ -153,6 +153,9 @@ def split_filed_to_block(gt_quad, image_size, down_ratio):
             real_w = real_h if c_x - real_h / 2 > 0 else down_ratio
             real_w = real_w if real_w < down_ratio else down_ratio
             block = [c_x, c_y, down_ratio, real_h]
+            # 有时候计算每那么精确，防御型的避免一些多出来 block 的情况
+            if block[0] + block[2] > image_size[1]:
+                break
             block_list.append(block)
     elif l_h >= u_w * ratio_limit:
         # 高比宽敞不少，是竖条形四边形，block的高需要差值计算
@@ -176,6 +179,9 @@ def split_filed_to_block(gt_quad, image_size, down_ratio):
             real_h = real_w if c_y - real_w / 2 > 0 else down_ratio
             real_h = real_h if real_h < down_ratio else down_ratio
             block = [c_x, c_y, real_w, down_ratio]
+            # 有时候计算每那么精确，防御型的避免一些多出来 block 的情况
+            if block[1] + block[3] > image_size[0]:
+                break
             block_list.append(block)
     else:
         # 高和宽差不多，是正方形式四边形

@@ -63,7 +63,7 @@ def init_train_parameters():
     初始化训练参数，主要是初始化图片数量
     :return:
     """
-    if train_parameters['current_mode'] == "train":
+    if train_parameters['current_mode'] != "train":
         return
     if train_parameters['image_count'] == -1:
         train_files_list = os.listdir(train_parameters['train_data_dir'])

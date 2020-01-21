@@ -95,7 +95,7 @@ class TestDetectLoss(unittest.TestCase):
         print("grad shape: {}".format(grad.shape))
         print("grad: {}".format(grad.transpose([0, 2, 3, 1])))
 
-    def test_split_block(self):
+    def test_split_block0(self):
         target_image_size = [640, 640]
         down_ratio_list = [8, 16, 32, 64, 128]
         down_ratio_dict = {}
@@ -150,6 +150,11 @@ class TestDetectLoss(unittest.TestCase):
 
             temp_image.save(file_name + '-' + str(down_ratio) + '-result.jpg')
             temp_resized_image.save(file_name + '-' + str(down_ratio) + '-resize-result.jpg')
+
+    def test_split_block1(self):
+        bbox_sample = [0.9362881, 0.7423581, 1.0, 0.7423581, 1.0, 0.76419216, 0.9362881, 0.76419216]
+        block_list = split_filed_to_block(bbox_sample, [320, 320], 8)
+        print(len(block_list))
 
 
 if __name__ == '__main__':

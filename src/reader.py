@@ -201,7 +201,7 @@ def preprocess(img, bbox_labels, input_size, mode):
     if mode == 'train':
         img = distort_image(img)
         im_width, im_height = img.size
-        # sample_labels = disturbance_box(sample_labels, im_width, im_height)
+        sample_labels = disturbance_box(sample_labels, im_width, im_height)
 
     img = resize_img(img, input_size)
     img = np.array(img).astype('float32')
