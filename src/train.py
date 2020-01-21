@@ -15,6 +15,7 @@ from train_config import train_parameters
 from yolo_block_loss import detect_loss, detect_loss_grad
 
 import os
+
 os.environ["FLAGS_fraction_of_gpu_memory_to_use"] = '0.82'
 import numpy as np
 import time
@@ -108,7 +109,7 @@ def build_program_with_feeder(main_prog, startup_prog, place):
         gt_box = fluid.layers.data(name='gt_box', shape=[max_box_num, 8], dtype='float32')
         feeder = fluid.DataFeeder(feed_list=[img, gt_box], place=place, program=main_prog)
         reader = single_custom_reader(train_parameters['train_data_dir'],
-                                      yolo_config['input_size'], 'eval')
+                                      yolo_config['input_size'], 'train')
         return feeder, reader, get_loss(img, gt_box, main_prog)
 
 
@@ -124,10 +125,10 @@ def get_loss(img, gt_box, program):
         losses = []
         down_sample_ratio = model.get_downsample_ratio()
         with fluid.unique_name.guard('train'):
-            train_image_size_tensor = fluid.layers.assign(np.array(yolo_config['input_size'][1:], dtype=np.int32))
+            train_image_size_tensor = fluid.layers.assign(np.array(yolo_config['input_size'][1:]))
             for i, out in enumerate(outputs):
-                down_ratio = fluid.layers.fill_constant(shape=[1], value=down_sample_ratio, dtype=np.int32)
-                yolo_anchors = fluid.layers.assign(np.array(model.get_yolo_anchors()[i], dtype=np.int32))
+                down_ratio = fluid.layers.fill_constant(shape=[1], value=down_sample_ratio, dtype="int32")
+                yolo_anchors = fluid.layers.assign(np.array(model.get_yolo_anchors()[i]))
                 filter_bbox = create_tmp_var(program, None, gt_box.dtype, gt_box.shape, True)
                 fluid.layers.py_func(func=split_by_anchors,
                                      x=[gt_box, train_image_size_tensor, down_ratio, yolo_anchors],
@@ -171,7 +172,6 @@ def load_params(exe, program):
 
 
 def train():
-
     logger.info("start train YOLOv3-block")
     train_parameters["current_mode"] = "train"
     init_train_parameters()

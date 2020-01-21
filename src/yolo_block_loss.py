@@ -10,8 +10,8 @@ CONF_RATIO = 1.0
 NON_CONF_RATIO = 0.2
 LOC_RATIO = 1.0
 LINK_RATIO = 1.0
-MIN_FLOAT = 0.0000001
-MAX_FLOAT = 10000
+MIN_FLOAT = 0.000001
+MAX_FLOAT = 20
 
 
 def sigmoid(x):
@@ -243,21 +243,24 @@ def get_link_loss(pred_link, gt_link):
     # for pp, gp in zip(pred_link, gt_link):
     #     loss += -((1 - gp) * np.log(1 - pp) + gp * np.log(pp))
     # 需要先经过 sigmoid 一次才能最为概率
+    # logger.info(pred_link)
     pred_link = sigmoid(pred_link)
-    loss = np.dot(np.add(1, -gt_link), np.log(np.add(1, -pred_link))) + np.dot(gt_link, np.log(pred_link))
+    loss = (1 - gt_link) * np.log(1 - pred_link) + gt_link * np.log(pred_link)
+    # logger.info("pred link{} gt link:{} loss:{}".format(pred_link, gt_link, -loss))
     return pred_link, np.sum(-loss)
 
 
-def get_link_loss_grad(pred_link, gt_link):
+def get_link_loss_grad(pred, gt_link):
     """
     计算 link 的梯度，梯度的公式为 (x - gt)/(x * (1 - x))，此处 x = sigmoid(pred_link)
     :param pred_link:
     :param gt_link:
     :return:
     """
-    pred_link_grad = sigmoid_grad(pred_link)
-    pred_link = sigmoid(pred_link)
-    grad = (pred_link - gt_link) / (pred_link * (1 - pred_link)) * pred_link_grad
+    pred_link_grad = sigmoid_grad(pred)
+    pred_link = sigmoid(pred)
+    grad = (pred_link - gt_link) / (pred_link * (1 - pred_link))* pred_link_grad
+    # logger.info("pred:{} pred link{} gt link:{} grad:{}".format(pred, pred_link, gt_link, grad))
     return grad
 
 
@@ -493,8 +496,9 @@ def detect_loss_grad(pred, gt_quad, image_size, down_ratio, yolo_anchors,
                     for anchor_mask_idx in range(0, len(yolo_anchors), 2):  # 每有一个 anchor 就有一组 conf
                         anchor_idx = int(anchor_mask_idx / 2)
                         non_conf = sigmoid(non_matched_pred[anchor_idx * 5])
+                        non_conf_grad = sigmoid_grad(non_matched_pred[anchor_idx * 5])
                         # e = np.e ** (-non_matched_pred[anchor_idx * 5])
-                        non_conf_grad = 1 / non_conf
+                        non_conf_grad = 1 / (1 - non_conf) * non_conf_grad
                         logger.debug("grid_x:{} grid_y:{} pred value:{} non matched conf:{} grad:{} ratio:{}"
                                      .format(x, y, non_matched_pred[anchor_idx * 5], non_conf, non_conf_grad, NON_CONF_RATIO))
                         pred_grad[n][y][x][anchor_idx * 5] = NON_CONF_RATIO * non_conf_grad

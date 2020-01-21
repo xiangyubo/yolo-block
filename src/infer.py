@@ -92,8 +92,8 @@ def infer(image_path):
                             return_numpy=False)
     period = time.time() - t1
     print("predict cost time:{}".format("%2.2f sec" % period))
-    for layer in batch_outputs:
-        logger.info(np.array(layer))
+    # for layer in batch_outputs:
+    #     logger.info(np.array(layer))
 
     pred_boxes = utils.get_all_yolo_pred(batch_outputs, yolo_anchors,
                                          target_size, image_shape, train_parameters['valid_thresh'])

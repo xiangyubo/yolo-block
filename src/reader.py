@@ -155,16 +155,14 @@ def random_hue(img):
 def distort_image(img):
     prob = np.random.uniform(0, 1)
     # Apply different distort order
-    if prob > 0.5:
-        img = random_brightness(img)
-        img = random_contrast(img)
-        img = random_saturation(img)
-        img = random_hue(img)
-    else:
-        img = random_brightness(img)
-        img = random_saturation(img)
-        img = random_hue(img)
-        img = random_contrast(img)
+    if prob < 0.85:
+        func_list = [random_brightness, random_contrast, random_saturation, random_hue]
+        loop_count = len(func_list)
+        for i in range(loop_count):
+            idx = np.random.randint(0, len(func_list))
+            img = func_list[idx](img)
+            func_list.pop(idx)
+
     return img
 
 
@@ -182,10 +180,10 @@ def disturbance_box(box, im_width, im_height):
     y_range = train_parameters["box_disturbance_range_y"]
     for n in range(box.shape[0]):
         for i in range(4):
-            disturbance_x = random.random(-x_range, x_range)
-            disturbance_y = random.randint(-y_range, y_range)
-            box[n, i * 2 + 0] += 1.0 * disturbance_x / im_width
-            box[n, i * 2 + 1] += 1.0 * disturbance_y / im_height
+            disturbance_x = np.random.randint(-x_range, x_range)
+            disturbance_y = np.random.randint(-y_range, y_range)
+            box[n, i * 2 + 0] += 0.2 * disturbance_x / im_width
+            box[n, i * 2 + 1] += 0.2 * disturbance_y / im_height
 
     return box
 
@@ -213,6 +211,24 @@ def preprocess(img, bbox_labels, input_size, mode):
     return img, sample_labels
 
 
+def rotate_quad(quad):
+    """
+     旋转四个顶点的四边形，使得第1个点是左上角点
+    :param quad:
+    :return:
+    """
+    vertex0 = (quad[0], quad[1])
+    vertex1 = (quad[4], quad[5])
+    if vertex0[0] < vertex1[0] and vertex0[1] < vertex1[1]:
+        return quad
+    elif vertex0[0] > vertex1[0] and vertex0[1] < vertex1[1]:
+        return [quad[6], quad[7], quad[0], quad[1], quad[2], quad[3], quad[4], quad[5]]
+    elif vertex0[0] > vertex1[0] and vertex0[1] > vertex1[1]:
+        return [quad[4], quad[5], quad[6], quad[7], quad[0], quad[1], quad[2], quad[3]]
+    else:
+        return [quad[2], quad[3], quad[4], quad[5], quad[6], quad[7], quad[0], quad[1]]
+
+
 def custom_reader(image_annotation_list, data_dir, input_size, mode):
     """
     用户自定义的数据读取函数
@@ -227,7 +243,7 @@ def custom_reader(image_annotation_list, data_dir, input_size, mode):
     def reader():
         np.random.shuffle(image_annotation_list)
         for image_path, annotation_path in image_annotation_list:
-            # logger.info("current deal {} {}".format(image_path, annotation_path))
+            logger.info("current deal {} {}".format(image_path, annotation_path))
             try:
                 ######################  以下可能是需要自定义修改的部分   ############################
                 if not os.path.exists(image_path):
@@ -256,6 +272,8 @@ def custom_reader(image_annotation_list, data_dir, input_size, mode):
                     parts = line.split(',')
                     bbox_sample = [float(parts[0]), float(parts[1]), float(parts[2]), float(parts[3]),
                                    float(parts[4]), float(parts[5]), float(parts[6]), float(parts[7])]
+                    bbox_sample = rotate_quad(bbox_sample)
+
                     bbox_sample[0] /= im_width
                     bbox_sample[2] /= im_width
                     bbox_sample[4] /= im_width

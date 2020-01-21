@@ -11,7 +11,8 @@ from collections import namedtuple
 import numpy as np
 from PIL import Image
 
-MIN_FLOAT = 0.00000001
+MIN_FLOAT = 0.000001
+MAX_FLOAT = 20
 
 logger = None
 
@@ -128,8 +129,12 @@ def resize_img(img, input_size):
 
 
 def sigmoid(x):
+    if isinstance(x, np.ndarray):
+        x[x > MAX_FLOAT] = MAX_FLOAT
+        x[x < -MAX_FLOAT] = -MAX_FLOAT
     ret = 1.0 / (1.0 + np.e ** (-x))
-    ret = ret if ret > MIN_FLOAT else MIN_FLOAT
+    if isinstance(ret, np.ndarray):
+        ret[ret < MIN_FLOAT] = MIN_FLOAT
     return ret
 
 
@@ -163,6 +168,25 @@ def get_neighbour(x, y, link_idx):
         return [x - 1, y]
 
 
+def get_all_yolo_pred(outputs, yolo_anchors, target_size, input_shape, valid_thresh=0.5, link_thresh=0.6):
+    """
+    转化预测结果为预测图上的矩形框和连接
+    需要分层的 BFS 构造出每一层的联通格子
+    :param outputs: 预测的结果，和 anchor 层数一样的层数，每一层包含了 batch_size 的相同层预测结果
+    :param yolo_anchors: [anchor_w0, anchor_h0, anchor_w1, anchor_h1]
+    :param target_size:训练图的尺寸大小 [c, h, w]
+    :param input_shape: 预测图的尺寸[h, w]
+    :param valid_thresh: 根据置信度做过滤
+    :return: 返回一组二维的点-链接图
+    """
+    all_pred = []
+    for output, anchors in zip(outputs, yolo_anchors):
+        pred = get_yolo_detection(output, anchors, target_size, input_shape, valid_thresh, link_thresh)
+        all_pred.extend(pred)
+
+    return all_pred
+
+
 def get_yolo_detection(preds, anchors, target_size, img_shape, valid_thresh, link_thresh):
     """
     计算 yolo-block 的预测结果，组装成应该有的 bbox 和 link
@@ -185,7 +209,7 @@ def get_yolo_detection(preds, anchors, target_size, img_shape, valid_thresh, lin
 
     ret_boxes = []
     for i in range(anchor_num):
-        preds[:, :, :, i * 5:i * 5 + 3] = sigmoid(preds[:, :, :, i * 5:i * 5 + 3])
+        preds[:, :, :, i * 5] = sigmoid(preds[:, :, :, i * 5])
         preds[:, :, :, i * 5 + 1] += grid_x
         preds[:, :, :, i * 5 + 1] *= width_down_sample_ratio
         preds[:, :, :, i * 5 + 2] += grid_y
@@ -194,35 +218,29 @@ def get_yolo_detection(preds, anchors, target_size, img_shape, valid_thresh, lin
         preds[:, :, :, i * 5 + 4] = np.exp(preds[:, :, :, i * 5 + 4]) * anchors[1] * img_shape[0] / target_size[1]
         preds[:, :, :, 5 * i + 1: 5 * i + 5] = box_xywh_to_xyxy(preds[:, :, :, 5 * i + 1: 5 * i + 5])
 
-        logger.info("anchors:{} preds box:{}".format(anchors, preds[:, :, :, i * 5:i * 5 + 5]))
+        # logger.info("anchors:{} preds box:{}".format(anchors, preds[:, :, :, i * 5:i * 5 + 5]))
         # 抽取合格的点，进行 BFS
         valid_map = preds[:, :, :, i * 5] >= valid_thresh
         # print(preds[:, :, :, i * 5])
         # print(valid_map)
-        ret_box = merge_box(valid_map, preds, link_thresh)
+        # ret_box = merge_box(valid_map, preds, link_thresh)
+        n, h, w = valid_map.shape
+        ret_box = []
+        for batch_idx in range(n):
+            y_idx_dict = {}
+            current_box = []
+            circular_list = []
+            for y in range(h):
+                for x in range(w):
+                    valid = valid_map[batch_idx, y, x]
+                    if valid:
+                        pred = preds[batch_idx, y, x]
+                        ret_box.append(pred)
+
         if len(ret_box) > 0:
             ret_boxes.extend(ret_box)
 
     return ret_boxes
-
-
-def get_all_yolo_pred(outputs, yolo_anchors, target_size, input_shape, valid_thresh=0.5, link_thresh=0.6):
-    """
-    转化预测结果为预测图上的矩形框和连接
-    需要分层的 BFS 构造出每一层的联通格子
-    :param outputs: 预测的结果，和 anchor 层数一样的层数，每一层包含了 batch_size 的相同层预测结果
-    :param yolo_anchors: [anchor_w0, anchor_h0, anchor_w1, anchor_h1]
-    :param target_size:训练图的尺寸大小 [c, h, w]
-    :param input_shape: 预测图的尺寸[h, w]
-    :param valid_thresh: 根据置信度做过滤
-    :return: 返回一组二维的点-链接图
-    """
-    all_pred = []
-    for output, anchors in zip(outputs, yolo_anchors):
-        pred = get_yolo_detection(output, anchors, target_size, input_shape, valid_thresh, link_thresh)
-        all_pred.extend(pred)
-
-    return all_pred
 
 
 def merge_box(valid_map, preds, link_thresh):
