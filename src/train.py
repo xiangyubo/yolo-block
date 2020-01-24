@@ -63,12 +63,12 @@ def single_custom_reader(data_dir, input_size, mode):
     return reader
 
 
-def optimizer_sgd_setting():
+def get_optimizer():
     num_epochs = train_parameters["num_epochs"]
     batch_size = train_parameters["train_batch_size"]
     iters = train_parameters["image_count"] // batch_size
     iters = 1 if iters < 1 else iters
-    learning_strategy = train_parameters['sgd_strategy']
+    learning_strategy = train_parameters['rms_strategy']
     lr = learning_strategy['learning_rate']
 
     boundaries = [int(i * iters * num_epochs) for i in learning_strategy["lr_epochs"]]
@@ -149,7 +149,7 @@ def get_loss(img, gt_box, program):
                 losses.append(fluid.layers.reduce_mean(tmp_loss))
                 down_sample_ratio //= 2
             loss = sum(losses)
-            optimizer = optimizer_sgd_setting()
+            optimizer = get_optimizer()
             optimizer.minimize(loss)
             return loss
 

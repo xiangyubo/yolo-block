@@ -4,8 +4,10 @@
 """
 import traceback
 
+import PIL
 import numpy as np
 import random
+import math
 import os
 import codecs
 
@@ -180,12 +182,45 @@ def disturbance_box(box, im_width, im_height):
     y_range = train_parameters["box_disturbance_range_y"]
     for n in range(box.shape[0]):
         for i in range(4):
-            disturbance_x = np.random.randint(-x_range, x_range)
-            disturbance_y = np.random.randint(-y_range, y_range)
+            disturbance_x = (np.random.random() - 0.5) * 2 * x_range
+            disturbance_y = (np.random.random() - 0.5) * 2 * y_range
             box[n, i * 2 + 0] += 0.2 * disturbance_x / im_width
             box[n, i * 2 + 1] += 0.2 * disturbance_y / im_height
 
     return box
+
+
+def ramdom_rotate(img, bbox):
+    """
+    随机选装，绕着中心点旋转，增强斜角文字的检测
+    :param img:
+    :param bbox:
+    :return:
+    """
+    prob = np.random.uniform(0, 1)
+    if prob < train_parameters['image_distort_strategy']['rotate_prob']:
+        rotate_degree = train_parameters['image_distort_strategy']['rotate_degree']     # 旋转的角度
+        degree = np.random.randint(-rotate_degree, rotate_degree)
+        radian = -degree / 180.0 * math.pi  # 将角度转化为弧度
+        im_width, im_height = img.size
+        rotate_image = img.rotate(degree, PIL.Image.BICUBIC, True)
+        rotate_img_width, rotate_img_height = rotate_image.size
+        half_offset_w = (rotate_img_width - im_width) / 2
+        half_offset_h = (rotate_img_height - im_height) / 2
+        sin = math.sin(radian)
+        cos = math.cos(radian)
+        temp_box = np.array(bbox)
+        for i in range(4):
+            temp_box_x = cos * temp_box[:, i * 2 + 0] * im_width - sin * temp_box[:, i * 2 + 1] * im_height \
+                         + (1 - cos) * 0.5 * im_width + sin * 0.5 * im_height
+            temp_box_y = sin * temp_box[:, i * 2 + 0] * im_width + cos * temp_box[:, i * 2 + 1] * im_height \
+                         + (1 - cos) * 0.5 * im_height - sin * 0.5 * im_width
+            temp_box[:, i * 2 + 0] = (temp_box_x + half_offset_w) / rotate_img_width
+            temp_box[:, i * 2 + 1] = (temp_box_y + half_offset_h) / rotate_img_height
+        bbox = temp_box.tolist()
+        img = rotate_image
+
+    return img, bbox
 
 
 def preprocess(img, bbox_labels, input_size, mode):
@@ -202,6 +237,7 @@ def preprocess(img, bbox_labels, input_size, mode):
         img = distort_image(img)
         im_width, im_height = img.size
         sample_labels = disturbance_box(sample_labels, im_width, im_height)
+        img, sample_labels = ramdom_rotate(img, sample_labels)
 
     img = resize_img(img, input_size)
     img = np.array(img).astype('float32')
@@ -243,7 +279,7 @@ def custom_reader(image_annotation_list, data_dir, input_size, mode):
     def reader():
         np.random.shuffle(image_annotation_list)
         for image_path, annotation_path in image_annotation_list:
-            logger.info("current deal {} {}".format(image_path, annotation_path))
+            logger.debug("current deal {} {}".format(image_path, annotation_path))
             try:
                 ######################  以下可能是需要自定义修改的部分   ############################
                 if not os.path.exists(image_path):

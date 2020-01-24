@@ -10,8 +10,9 @@ CONF_RATIO = 1.0
 NON_CONF_RATIO = 0.2
 LOC_RATIO = 1.0
 LINK_RATIO = 1.0
-MIN_FLOAT = 0.000001
+MIN_FLOAT = 10 ** -6
 MAX_FLOAT = 20
+epsilon = 10 ** -7
 
 
 def sigmoid(x):
@@ -29,6 +30,19 @@ def sigmoid_grad(x):
     return sigmoid_value * (1.0 - sigmoid_value)
 
 
+def safe_log(x):
+    if isinstance(x, np.ndarray):
+        if len(x[x < MIN_FLOAT]) > 0:
+            logger.warning("in safe log, x <= 0, x: {}".format(x))
+        x[x < MIN_FLOAT] = MIN_FLOAT
+    elif isinstance(x, int) or isinstance(x, float):
+        if x <= 0:
+            logger.warning("in safe log, x <= 0, x: {}".format(x))
+        if x < MIN_FLOAT:
+            x = MIN_FLOAT
+    return np.log(x + epsilon)
+
+
 def smooth_l1_loss(pred, gt):
     """
     smooth L1 损失函数，损失函数公式为：
@@ -39,8 +53,8 @@ def smooth_l1_loss(pred, gt):
     :return:
     """
     diff = pred - gt
-    loss0 = np.add(np.abs(diff[np.abs(diff) >= 1.0]), -0.5)
-    loss1 = np.dot(np.square(diff[np.abs(diff) < 1.0]), 0.5)
+    loss0 = np.abs(diff[np.abs(diff) >= 1.0]) - 0.5
+    loss1 = np.square(diff[np.abs(diff) < 1.0]) * 0.5
     return np.sum(loss0) + np.sum(loss1)
 
 
@@ -89,8 +103,8 @@ def get_pred_box(gt_block, i, j, down_ratio, anchor):
 
     c_x = gt_block[0] / down_ratio - i
     c_y = gt_block[1] / down_ratio - j
-    w = np.log(gt_block[2] / anchor[0])
-    h = np.log(gt_block[3] / anchor[1])
+    w = safe_log(gt_block[2] / anchor[0])
+    h = safe_log(gt_block[3] / anchor[1])
     return np.array([c_x, c_y, w, h])
 
 
@@ -251,7 +265,7 @@ def get_link_loss(pred_link, gt_link):
     # 需要先经过 sigmoid 一次才能最为概率
     # logger.info(pred_link)
     pred_link = sigmoid(pred_link)
-    loss = (1 - gt_link) * np.log(1 - pred_link) + gt_link * np.log(pred_link)
+    loss = (1 - gt_link) * safe_log(1 - pred_link) + gt_link * safe_log(pred_link)
     # logger.info("pred link{} gt link:{} loss:{}".format(pred_link, gt_link, -loss))
     return pred_link, np.sum(-loss)
 
@@ -265,7 +279,7 @@ def get_link_loss_grad(pred, gt_link):
     """
     pred_link_grad = sigmoid_grad(pred)
     pred_link = sigmoid(pred)
-    grad = (pred_link - gt_link) / (pred_link * (1 - pred_link))* pred_link_grad
+    grad = (pred_link - gt_link) / (pred_link * (1 - pred_link)) * pred_link_grad
     # logger.info("pred:{} pred link{} gt link:{} grad:{}".format(pred, pred_link, gt_link, grad))
     return grad
 
@@ -293,13 +307,13 @@ def seg_loss(gt_block, pred_grid, grid_x, grid_y, down_ratio, yolo_anchors):
         box = pred_grid[pred_offset:pred_offset + 5]
         conf = sigmoid(box[0])
         gt_box = get_pred_box(gt_block, grid_x, grid_y, down_ratio, anchor)
-        current_conf_loss = -np.log(conf)
+        current_conf_loss = -safe_log(conf)
         logger.debug("anchor:{} down_ratio:{} grid_x:{} grid_y:{} pred conf:{} gt conf:1.0 conf loss:{}"
                      .format(anchor, down_ratio, grid_x, grid_y, conf, current_conf_loss))
         conf_loss = conf_loss + current_conf_loss  # conf loss
         current_location_loss = smooth_l1_loss(box[1:], gt_box)
         logger.debug("anchor:{} down_ratio:{} grid_x:{} grid_y:{} pred loc:{} gt loc:{} loc loss:{}"
-                    .format(anchor, down_ratio, grid_x, grid_y, box[1:], gt_box, current_location_loss))
+                     .format(anchor, down_ratio, grid_x, grid_y, box[1:], gt_box, current_location_loss))
         location_loss = location_loss + current_location_loss  # location loss
 
     logger.debug("seg loss, conf part:{} conf_ratio:{}, loc_ratio:{} location part:{}"
@@ -330,12 +344,12 @@ def seg_loss_grad(gt_block, pred_grid, grid_x, grid_y, down_ratio, yolo_anchors)
         # conf loss grad
         conf_grad = CONF_RATIO * sigmoid_grad(box[0]) / (-conf)
         logger.debug("anchor:{} down_ratio:{} grid_x:{} grid_y:{} pred value:{} pred conf:{} grad:{}"
-                    .format(anchor, down_ratio, grid_x, grid_y, box[0], conf, conf_grad))
+                     .format(anchor, down_ratio, grid_x, grid_y, box[0], conf, conf_grad))
         grad[offset:offset + 1] = conf_grad
         # location loss grad
         grad[offset + 1:offset + 5] = LOC_RATIO * smooth_l1_loss_grad(box[1:], gt_box)
         logger.debug("anchor:{} down_ratio:{} grid_x:{} grid_y:{} pred box:{} gt_box:{} grad:{}"
-                    .format(anchor, down_ratio, grid_x, grid_y, box[1:], gt_box, grad[offset + 1:offset + 5]))
+                     .format(anchor, down_ratio, grid_x, grid_y, box[1:], gt_box, grad[offset + 1:offset + 5]))
     return grad
 
 
@@ -428,7 +442,7 @@ def detect_loss(pred, gt_quad, image_size, down_ratio, yolo_anchors):
         for anchor_mask_idx in range(0, len(yolo_anchors), 2):  # 每有一个 anchor 就有一组 conf
             anchor_idx = int(anchor_mask_idx / 2)
             pred_conf = sigmoid(non_matched_pred[:, anchor_idx * 5])
-            current_non_matched_loss = np.sum(-np.log(1 - pred_conf))
+            current_non_matched_loss = np.sum(-safe_log(1 - pred_conf))
             logger.debug("negative conut:{} conf:{} loss:{}"
                          .format(len(non_matched_pred), pred_conf, current_non_matched_loss))
             non_matched_loss += current_non_matched_loss  # 1是target，0是background
@@ -506,7 +520,8 @@ def detect_loss_grad(pred, gt_quad, image_size, down_ratio, yolo_anchors,
                         # e = np.e ** (-non_matched_pred[anchor_idx * 5])
                         non_conf_grad = 1 / (1 - non_conf) * non_conf_grad
                         logger.debug("grid_x:{} grid_y:{} pred value:{} non matched conf:{} grad:{} ratio:{}"
-                                     .format(x, y, non_matched_pred[anchor_idx * 5], non_conf, non_conf_grad, NON_CONF_RATIO))
+                                     .format(x, y, non_matched_pred[anchor_idx * 5], non_conf, non_conf_grad,
+                                             NON_CONF_RATIO))
                         pred_grad[n][y][x][anchor_idx * 5] = NON_CONF_RATIO * non_conf_grad
 
     logger.debug("in detect_loss_grad, grad shape:{}".format(pred_grad.shape))

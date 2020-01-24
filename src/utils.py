@@ -31,7 +31,7 @@ def init_log_config():
             os.makedirs(log_path)
         log_name = os.path.join(log_path, 'train.log')
         sh = logging.StreamHandler()
-        fh = logging.FileHandler(log_name, mode='a')
+        fh = logging.FileHandler(log_name, mode='w')
         fh.setLevel(logging.INFO)
         sh.setLevel(logging.DEBUG)
         formatter = logging.Formatter(

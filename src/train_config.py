@@ -12,12 +12,12 @@ train_parameters = {
     "train_data_dir": "../data/trainImageSet/",
     "eval_data_dir": "../data/evalImageSet/",
     "image_count": -1,
-    "continue_train": False,  # 是否加载前一次的训练参数，接着训练
+    "continue_train": True,  # 是否加载前一次的训练参数，接着训练
     "pretrained": False,
     "filter_by_anchor": True,
     "max_box_num": 35,  # 一幅图上最多有多少个目标
-    "num_epochs": 60,
-    "train_batch_size": 3,  # 对于完整 yolov3，每一批的训练样本不能太多，内存会炸掉
+    "num_epochs": 80,
+    "train_batch_size": 4,  # 对于完整 yolov3，每一批的训练样本不能太多，内存会炸掉
     "use_gpu": False,
     "yolo_block_cfg": {
         "input_size": [3, 320, 320],    # c, h, w
@@ -29,7 +29,7 @@ train_parameters = {
         "freeze_dir": "../resources/models/freeze-yolo-block"
     },
     "ignore_thresh": 0.7,
-    "valid_thresh": 0.115,
+    "valid_thresh": 0.5,
     "nms_thresh": 0.45,
     "nms_top_k": 400,
     "nms_pos_k": 100,
@@ -48,9 +48,11 @@ train_parameters = {
         "saturation_prob": 0.5,
         "saturation_delta": 0.5,
         "brightness_prob": 0.5,
-        "brightness_delta": 0.125
+        "brightness_delta": 0.125,
+        "rotate_prob": 0.4,
+        "rotate_degree": 20
     },
-    "sgd_strategy": {
+    "rms_strategy": {
         "learning_rate": 0.01,
         "lr_epochs": [0.3, 0.5, 0.7, 0.9],
         "lr_decay": [1, 0.5, 0.25, 0.1, 0.02]
