@@ -29,7 +29,8 @@ train_parameters = {
         "freeze_dir": "../resources/models/freeze-yolo-block"
     },
     "ignore_thresh": 0.7,
-    "valid_thresh": 0.5,
+    "valid_thresh": 0.6,
+    "link_thresh": 0.4,
     "nms_thresh": 0.45,
     "nms_top_k": 400,
     "nms_pos_k": 100,

@@ -4,15 +4,18 @@
 """
 import os
 import logging
-import functools
-import math
-from collections import namedtuple
+import predict_grid
+import shapely
+from shapely.geometry import Polygon, MultiPoint  # 多边形
 
 import numpy as np
 from PIL import Image
 
 MIN_FLOAT = 0.000001
 MAX_FLOAT = 20
+
+WORD_END = 0
+WORD_MID = 1
 
 logger = None
 
@@ -65,6 +68,48 @@ def box_iou_xyxy(box1, box2):
     return inter_area / (b1_area + b2_area - inter_area)
 
 
+def box_iou_quad(quad1, quad2):
+    """
+    计算两个四边形的 iou，每个四边形的形式为 x1, y1, x2, y2, x3, y3, x4, y4
+    :param quad1: numpy type array
+    :param quad2: numpy type array
+    :return:
+    """
+    assert quad1.shape[-1] == 8, "quad1 shape[-1] should be 8."
+    assert quad2.shape[-1] == 8, "quad2 shape[-1] should be 8."
+
+    ret_iou = np.zeros(len(quad2))
+
+    quad_line1 = np.array(quad1).reshape((-1, 4, 2))
+    quad_line1 = quad_line1[0]
+    poly1 = Polygon(quad_line1).convex_hull
+    quad_line2 = np.array(quad2).reshape((-1, 4, 2))
+    for idx, tmp_quad_line in enumerate(quad_line2):
+        poly2 = Polygon(tmp_quad_line).convex_hull
+        if not poly1.intersects(poly2):  # 如果两四边形不相交
+            ret_iou[idx] = 0.0
+        elif poly1.contains(poly2):
+            ret_iou[idx] = 1.0
+        else:
+            try:
+                inter_area = poly1.intersection(poly2).area  # 相交面积
+                union_poly = np.concatenate((quad_line1, tmp_quad_line))  # 合并两个box坐标，变为8*2
+                # union_area = poly1.area + poly2.area - inter_area
+                union_area = MultiPoint(union_poly).convex_hull.area
+                if union_area == 0:
+                    ret_iou[idx] = 0.0
+                # iou = float(inter_area) / (union_area-inter_area)  #错了
+                ret_iou[idx] = float(inter_area) / union_area
+                # iou=float(inter_area) /(poly1.area+poly2.area-inter_area)
+                # 源码中给出了两种IOU计算方式，第一种计算的是: 交集部分/包含两个四边形最小多边形的面积
+                # 第二种： 交集 / 并集（常见矩形框IOU计算方式）
+            except shapely.geos.TopologicalError:
+                logger.warning('shapely.geos.TopologicalError occured, iou set to 0')
+                ret_iou[idx] = 0.0
+
+    return ret_iou
+
+
 def rescale_box_in_input_image(boxes, im_shape, input_size):
     """Scale (x1, x2, y1, y2) box of yolo output to input image"""
     h, w = im_shape
@@ -91,32 +136,31 @@ def rescale_box_in_input_image(boxes, im_shape, input_size):
 
 
 def calc_nms_box_new(pred_boxes, nms_thresh=0.4):
-    output_boxes = np.empty((0, 5))
-    output_scores = np.empty(0)
-    output_labels = np.empty(0)
+    """
+    对预测框做非极大值抑制
+    :param pred_boxes: 有n个batch，每个batch对应一个数组的预测框，conf, x1, y1, x2, y2, x3, y3, x4, y4
+    :param nms_thresh:
+    :return:
+    """
+    ret_pred_box = []
 
-    pred_boxes = np.array(pred_boxes)
-    print(pred_boxes.shape)
-    print(pred_boxes)
-    pred_boxes = pred_boxes.reshape((-1, 5))
-    print(pred_boxes.shape)
-    pred_boxes = pred_boxes[(-pred_boxes)[:, 0].argsort()]
+    for pb_pred_boxes in pred_boxes:
 
-    detect_boxes = []
-    detect_scores = []
-    detect_labels = []
-    while pred_boxes.shape[0]:
-        detect_boxes.append(pred_boxes[0])
-        if pred_boxes.shape[0] == 1:
-            break
-        iou = box_iou_xyxy(np.array([detect_boxes[-1][1:]]), pred_boxes[1:, 1:5])
-        pred_boxes = pred_boxes[1:][iou < nms_thresh]
+        pb_pred_boxes = np.array(pb_pred_boxes)
+        pb_pred_boxes = pb_pred_boxes.reshape((-1, 9))
+        pb_pred_boxes = pb_pred_boxes[(-pb_pred_boxes)[:, 0].argsort()]
 
-    output_boxes = np.append(output_boxes, detect_boxes, axis=0)
-    output_scores = np.append(output_scores, detect_scores)
-    output_labels = np.append(output_labels, detect_labels)
+        detect_boxes = []
+        while pb_pred_boxes.shape[0]:
+            detect_boxes.append(pb_pred_boxes[0])
+            if pb_pred_boxes.shape[0] == 1:
+                break
+            iou = box_iou_quad(np.array([detect_boxes[-1][1:]]), pb_pred_boxes[1:, 1:])
+            pb_pred_boxes = pb_pred_boxes[1:][iou < nms_thresh]
 
-    return (output_boxes, output_scores, output_labels)
+        ret_pred_box.append(detect_boxes)
+
+    return ret_pred_box
 
 
 def distance_of_pp(p0, p1):
@@ -150,6 +194,13 @@ def box_xywh_to_xyxy(box):
 
 
 def get_neighbour(x, y, link_idx):
+    """
+    以当前节点的坐标 x, y 和节点的 link 下标出发，给出这个 link 关联的邻居节点坐标
+    :param x:
+    :param y:
+    :param link_idx:
+    :return:
+    """
     if link_idx == 0:
         return [x - 1, y - 1]
     elif link_idx == 1:
@@ -168,6 +219,33 @@ def get_neighbour(x, y, link_idx):
         return [x - 1, y]
 
 
+def get_link_idx(c_x, c_y, n_x, n_y):
+    """
+    以 c_x, c_y 节点为中心出发，找到邻居坐标为 x, y 的 link 下标
+    :param c_x:
+    :param c_y:
+    :param n_x:
+    :param n_y:
+    :return:
+    """
+    if n_x < c_x and n_y < c_y:
+        return 0
+    elif n_x == c_x and n_y < c_y:
+        return 1
+    elif n_x > c_x and n_y < c_y:
+        return 2
+    elif n_x > c_x and n_y == c_y:
+        return 3
+    elif n_x > c_x and n_y > c_y:
+        return 4
+    elif n_x == c_x and n_y > c_y:
+        return 5
+    elif n_x < c_x and n_y > c_y:
+        return 6
+    elif n_x < c_x and n_y == c_y:
+        return 7
+
+
 def get_all_yolo_pred(outputs, yolo_anchors, target_size, input_shape, valid_thresh=0.5, link_thresh=0.6):
     """
     转化预测结果为预测图上的矩形框和连接
@@ -177,12 +255,21 @@ def get_all_yolo_pred(outputs, yolo_anchors, target_size, input_shape, valid_thr
     :param target_size:训练图的尺寸大小 [c, h, w]
     :param input_shape: 预测图的尺寸[h, w]
     :param valid_thresh: 根据置信度做过滤
+    :param link_thresh: 对于连接的置信度过滤
     :return: 返回一组二维的点-链接图
     """
-    all_pred = []
+
+    temp = outputs[0]
+    preds = np.array(temp)
+    n, c, h, w = preds.shape
+    all_pred = [[] for i in range(n)]
+
     for output, anchors in zip(outputs, yolo_anchors):
         pred = get_yolo_detection(output, anchors, target_size, input_shape, valid_thresh, link_thresh)
         all_pred.extend(pred)
+        for batch_idx, per_batch_ret in enumerate(pred):
+            batch_ret = all_pred[batch_idx]
+            batch_ret.extend(per_batch_ret)
 
     return all_pred
 
@@ -198,7 +285,7 @@ def get_yolo_detection(preds, anchors, target_size, img_shape, valid_thresh, lin
     """
     preds = np.array(preds)
     n, c, h, w = preds.shape
-    print("current n:{} c:{} h:{} w:{} valid_thresh:{}".format(n, c, h, w, valid_thresh))
+    logger.debug("current n:{} c:{} h:{} w:{} valid_thresh:{}".format(n, c, h, w, valid_thresh))
     width_down_sample_ratio = img_shape[1] / w
     height_down_sample_ratio = img_shape[0] / h
     anchor_num = int(len(anchors) // 2)
@@ -207,7 +294,7 @@ def get_yolo_detection(preds, anchors, target_size, img_shape, valid_thresh, lin
     preds = preds.transpose((0, 2, 3, 1)).reshape([n, h, w, anchor_num * 5 + 8])
     preds[:, :, :, -8:] = sigmoid(preds[:, :, :, -8:])
 
-    ret_boxes = []
+    ret_boxes = [[] for i in range(n)]
     for i in range(anchor_num):
         preds[:, :, :, i * 5] = sigmoid(preds[:, :, :, i * 5])
         preds[:, :, :, i * 5 + 1] += grid_x
@@ -218,27 +305,12 @@ def get_yolo_detection(preds, anchors, target_size, img_shape, valid_thresh, lin
         preds[:, :, :, i * 5 + 4] = np.exp(preds[:, :, :, i * 5 + 4]) * anchors[1] * img_shape[0] / target_size[1]
         preds[:, :, :, 5 * i + 1: 5 * i + 5] = box_xywh_to_xyxy(preds[:, :, :, 5 * i + 1: 5 * i + 5])
 
-        # logger.info("anchors:{} preds box:{}".format(anchors, preds[:, :, :, i * 5:i * 5 + 5]))
         # 抽取合格的点，进行 BFS
         valid_map = preds[:, :, :, i * 5] >= valid_thresh
-        # print(preds[:, :, :, i * 5])
-        # print(valid_map)
-        # ret_box = merge_box(valid_map, preds, link_thresh)
-        n, h, w = valid_map.shape
-        ret_box = []
-        for batch_idx in range(n):
-            y_idx_dict = {}
-            current_box = []
-            circular_list = []
-            for y in range(h):
-                for x in range(w):
-                    valid = valid_map[batch_idx, y, x]
-                    if valid:
-                        pred = preds[batch_idx, y, x]
-                        ret_box.append(pred)
-
-        if len(ret_box) > 0:
-            ret_boxes.extend(ret_box)
+        ret_box = merge_box(valid_map, preds, link_thresh)
+        for batch_idx, per_batch_ret in enumerate(ret_box):
+            batch_ret = ret_boxes[batch_idx]
+            batch_ret.extend(per_batch_ret)
 
     return ret_boxes
 
@@ -247,7 +319,6 @@ def merge_box(valid_map, preds, link_thresh):
     """
     将所有的box当作图来进行联通子图合并
     """
-    Circular = namedtuple("Circular", ['x', 'y', 'links', 'bbox', 'conf'])
 
     ret_box = []
     n, h, w = valid_map.shape
@@ -256,6 +327,7 @@ def merge_box(valid_map, preds, link_thresh):
         y_idx_dict = {}
         current_box = []
         circular_list = []
+        # 先选出所有可能的点，组装成list，和可以快速访问的map
         for y in range(h):
             for x in range(w):
                 valid = valid_map[batch_idx, y, x]
@@ -263,9 +335,11 @@ def merge_box(valid_map, preds, link_thresh):
                     continue
                 pred = preds[batch_idx, y, x]
                 conf = pred[0]
-                box = tuple(pred[1:5])
-                links = tuple(pred[5:5 + 8])
-                c = Circular(x, y, links, box, conf)
+                box = pred[1:5]
+                links = pred[5:5 + 8]
+                logger.debug("a available circle, conf:{:.2f} x:{} y:{} links:{} bbox:{}"
+                            .format(conf, x, y, links, box))
+                c = predict_grid.Grid(x, y, links, box, conf, WORD_MID)
                 circular_list.append(c)
                 if y in y_idx_dict:
                     x_dict = y_idx_dict[y]
@@ -274,7 +348,6 @@ def merge_box(valid_map, preds, link_thresh):
                     y_idx_dict[y] = x_dict
                 x_dict[x] = len(circular_list) - 1
 
-        # logger.info(y_idx_dict)
         # 广度优先遍历，找出所有的联通子图
         circular_count = len(circular_list)
         sub_graph_list = []
@@ -293,43 +366,94 @@ def merge_box(valid_map, preds, link_thresh):
                     current_sub_graph.add(e)
                     circular = circular_list[e]
                     links = circular.links
-                    # logger.info("e:{} circle:{}".format(e, circular))
+                    # logger.debug("e:{} circle:{}".format(e, circular))
                     for idx, link in enumerate(links):
                         if link >= link_thresh:
                             neighbour_idx = None
                             x, y = get_neighbour(circular.x, circular.y, idx)
-                            if y in y_idx_dict:
-                                if x in y_idx_dict[y]:
-                                    neighbour_idx = y_idx_dict[y][x]
-                            if neighbour_idx is not None \
-                                    and neighbour_idx not in current_sub_graph \
-                                    and neighbour_idx not in visit_set and neighbour_idx not in visit_queue:
-                                # logger.info("idx:{} x:{} y:{} neighbour_idx:{} append to visit queue, queue:{}, visit_set:{}"
-                                #       .format(idx, x, y, neighbour_idx, visit_queue, visit_set))
-                                visit_queue.append(neighbour_idx)
+                            if y in y_idx_dict and x in y_idx_dict[y]:
+                                neighbour_idx = y_idx_dict[y][x]
+                            if neighbour_idx is not None:
+                                # 存在有效的邻居节点，此时才能证明这个 link 可能是有效的
+                                # 是否真的有效，还要看邻居的意思
+                                neighbour_c = circular_list[neighbour_idx]
+                                n_l_idx = get_link_idx(neighbour_c.x, neighbour_c.y, circular.x, circular.y)
+                                origin_n_l = neighbour_c.links[n_l_idx]
+                                # 邻居想跟自己连接，才连接，不强求
+                                links[idx] = 0.0 if origin_n_l < link_thresh else link
+                                if neighbour_idx not in current_sub_graph and neighbour_idx not in visit_set \
+                                        and neighbour_idx not in visit_queue and links[idx] > 0.0000001:
+                                    # 此时这个邻居节点还是未访问过的，并且想和自己相连
+                                    # 查看一下此时邻居节点是否有边和自己相连，如果不相连，还需要修改邻居节点的 links
+                                    visit_queue.append(neighbour_idx)
+                            else:
+                                # 虽然想和邻居节点相连，但是并不存在有效的邻居节点，所以这个 link 无效
+                                links[idx] = 0.0
+
+                    # 此时和所有的邻居都验证完毕了，计算节点是否为端点
+                    links[links >= link_thresh] = 1.0
+                    links[links < link_thresh] = 0.0
+                    has_link = np.where(links >= 0.9, 1, 0)
+                    link_count = np.sum(has_link)
+                    circular.end_type = WORD_END if link_count <= 1 else WORD_MID
                     if len(visit_queue) == 0:
                         break
                 sub_graph_list.append(current_sub_graph)
 
+        # 为组合在一起的 bbox 构建外接矩形框
         for sub_graph in sub_graph_list:
-            xmin, ymin = 1000000, 1000000
-            xmax, ymax = 0, 0
+            x1, y1, x2, y2, x3, y3, x4, y4 = 0, 0, 0, 0, 0, 0, 0, 0
             mean_conf = 0.0
+            end_c_0 = None
+            end_c_1 = None
+            logger.debug("start a new sub graph")
             for idx in sub_graph:
                 c = circular_list[idx]
+                conf = c.conf
+                x = c.x
+                y = c.y
+                box = c.bbox
+                links = c.links
+                end_type = c.end_type
+                logger.debug("in sub graph circle, x:{} y:{} end type:{} links:{}".format(x, y, end_type, links))
                 mean_conf += c.conf
-                if c.bbox[0] < xmin:
-                    xmin = c.bbox[0]
-                if c.bbox[1] < ymin:
-                    ymin = c.bbox[1]
-                if c.bbox[2] > xmax:
-                    xmax = c.bbox[2]
-                if c.bbox[3] > ymax:
-                    ymax = c.bbox[3]
+                if c.end_type == WORD_END:
+                    if end_c_0 is None:
+                        end_c_0 = c
+                    elif end_c_1 is None:
+                        end_c_1 = c
+            if end_c_1 is None:
+                x1, y1 = end_c_0.bbox[0], end_c_0.bbox[1]
+                x2, y2 = end_c_0.bbox[2], end_c_0.bbox[1]
+                x3, y3 = end_c_0.bbox[2], end_c_0.bbox[3]
+                x4, y4 = end_c_0.bbox[0], end_c_0.bbox[3]
+            else:
+                if end_c_0.x < end_c_1.x:
+                    x1, y1 = end_c_0.bbox[0], end_c_0.bbox[1]
+                    x2, y2 = end_c_1.bbox[2], end_c_1.bbox[1]
+                    x3, y3 = end_c_1.bbox[2], end_c_1.bbox[3]
+                    x4, y4 = end_c_0.bbox[0], end_c_0.bbox[3]
+                elif end_c_0.x > end_c_1.x:
+                    x1, y1 = end_c_1.bbox[0], end_c_1.bbox[1]
+                    x2, y2 = end_c_0.bbox[2], end_c_0.bbox[1]
+                    x3, y3 = end_c_0.bbox[2], end_c_0.bbox[3]
+                    x4, y4 = end_c_1.bbox[0], end_c_1.bbox[3]
+                else:
+                    if end_c_0.y < end_c_1.y:
+                        x1, y1 = end_c_0.bbox[0], end_c_0.bbox[1]
+                        x2, y2 = end_c_0.bbox[2], end_c_0.bbox[1]
+                        x3, y3 = end_c_1.bbox[2], end_c_1.bbox[3]
+                        x4, y4 = end_c_1.bbox[0], end_c_1.bbox[3]
+                    else:
+                        x1, y1 = end_c_1.bbox[0], end_c_1.bbox[1]
+                        x2, y2 = end_c_1.bbox[2], end_c_1.bbox[1]
+                        x3, y3 = end_c_0.bbox[2], end_c_0.bbox[3]
+                        x4, y4 = end_c_0.bbox[0], end_c_0.bbox[3]
             mean_conf /= len(sub_graph)
-            current_box.append([mean_conf, xmin, ymin, xmax, ymax])
-        if len(current_box) > 0:
-            ret_box.extend(current_box)
+            current_box.append([mean_conf, x1, y1, x2, y2, x3, y3, x4, y4])
+
+        # 按照每个 batch 一个输出
+        ret_box.append(current_box)
     return ret_box
 
 

@@ -50,10 +50,10 @@ def draw_bbox_image(img, pred_boxes, save_name):
     """
     draw = ImageDraw.Draw(img)
     for box in pred_boxes:
-        # for box in layers:
-        conf, xmin, ymin, xmax, ymax = box[0], box[1], box[2], box[3], box[4]
-        print("pred text box, conf:{} bbox:{}".format(conf, [xmin, ymin, xmax, ymax]))
-        draw.rectangle((xmin, ymin, xmax, ymax), None, 'red')
+        conf = box[0]
+        x1, y1, x2, y2, x3, y3, x4, y4 = box[1], box[2], box[3], box[4], box[5], box[6], box[7], box[8]
+        logger.debug("pred text box, conf:{:.3f} bbox:{}".format(conf, [x1, y1, x2, y2, x3, y3, x4, y4]))
+        draw.polygon([(x1, y1), (x2, y2), (x3, y3), (x4, y4)], fill=None, outline=(255, 0, 0))
 
     img.save(save_name)
 
@@ -81,34 +81,32 @@ def infer(image_path):
     :param image_path:
     :return:
     """
+    logger.info("infer image:{}".format(image_path))
     origin, tensor_img = read_image(image_path)
     input_w, input_h = origin.size[0], origin.size[1]
     image_shape = np.array([input_h, input_w], dtype='int32')
-    print("image shape high:{}, width:{}".format(input_h, input_w))
+    logger.info("image shape high:{}, width:{}".format(input_h, input_w))
     t1 = time.time()
     batch_outputs = exe.run(inference_program,
                             feed={feed_target_names[0]: tensor_img},
                             fetch_list=fetch_targets,
                             return_numpy=False)
     period = time.time() - t1
-    print("predict cost time:{}".format("%2.2f sec" % period))
+    logger.info("predict cost time:{}".format("%2.2f sec" % period))
     # for layer in batch_outputs:
     #     logger.info(np.array(layer))
 
-    pred_boxes = utils.get_all_yolo_pred(batch_outputs, yolo_anchors,
-                                         target_size, image_shape, train_parameters['valid_thresh'])
-    print(len(pred_boxes))
-    # print(pred_boxes)
-    # pred_boxes = utils.calc_nms_box_new(pred_boxes, train_parameters['nms_thresh'])
+    pred_boxes = utils.get_all_yolo_pred(batch_outputs, yolo_anchors, target_size,
+                                         image_shape, train_parameters['valid_thresh'],
+                                         train_parameters['link_thresh'])
+    pred_boxes = utils.calc_nms_box_new(pred_boxes, train_parameters['nms_thresh'])
 
     last_dot_index = image_path.rfind('.')
-    out_path = image_path[:last_dot_index]
-    out_path += '-result.jpg'
-    draw_bbox_image(origin, pred_boxes, out_path)
+    out_path = image_path[:last_dot_index] + '-result.jpg'
+    draw_bbox_image(origin, pred_boxes[0], out_path)
 
 
 if __name__ == '__main__':
     image_name = sys.argv[1]
-    print(os.getcwd())
     image_path = image_name
     infer(image_path)
